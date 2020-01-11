@@ -1,0 +1,49 @@
+--- 
+title: "Ökonometria"
+toc-title: "Tartalom"
+author: "Ferenci Tamás, \\href{mailto:tamas.ferenci@medstat.hu}{tamas.ferenci@medstat.hu}"
+date: '`r format(Sys.time(), "%Y\\. %B %e\\.")`'
+site: bookdown::bookdown_site
+documentclass: book
+link-citations: yes
+description: "Az ökonometria a társadalmi-gazdasági jelenségek kvantitatív, empirikus vizsgálatának, modellezésének tudománya. A jegyzet ezt tárgyalja, kerülve a mély matematikai részleteket, a hangsúlyt inkább a módszerek sokféleségének bemutatására helyezve. A számításokat mindenhol R statisztikai környezet alatt szemlélti."
+lang: hu
+github-repo: tamas-ferenci/FerenciTamas_Okonometria
+mainfont: XITS
+mathfont: XITS Math
+url: https://tamas-ferenci.github.io/FerenciTamas_Okonometria/
+cover-image: FerenciTamas_Okonometria_cover.png
+---
+
+# Előszó {-}
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(fig.align="center",cache = TRUE)
+options(digits=2)
+```
+
+```{block, type="handout"}
+Az ökonometriai a társadalmi-gazdasági jelenségek számszerűsített, empirikus -- azaz tapasztalati, tényadatokon alapuló -- vizsgálatának, modellezésének a tudománya
+```
+
+Az ökonometriai a társadalmi-gazdasági jelenségek számszerűsített, empirikus -- azaz tapasztalati, tényadatokon alapuló -- vizsgálatának, modellezésének a tudománya. Szemben azzal, amit esetleg a név sugallhat, közel sem csak közgazdászoknak fontos: szociológusok, társadalomkutatók számára ugyanúgy alapvető az ökonometria ismerete. Sőt, maguk a módszerei még ennél is szélesebb körben, ahol empirikus adatok kezelésére szükség van, biostatisztikától a pszichometrián át az agrometriáig, felhasználhatóak. (Ahogy szokták is mondani: a "statisztika egy".)
+
+```{block, type="handout"}
+Tárgyalás matematikai részletek nélkül, inkább sok területet érintve (de elméletileg precízen)
+```
+
+Ez a jegyzet ezeket a módszereket tárgyalja, az alapoktól kezdve. Nem célja mély matematikai részletek tárgyalása (noha a korszerű ökonometriára ez nagyon is jellemző), inkább a módszerek, alkalmazási területek, és eszközök sokféleségét kívánja bemutatni. Az elméleti szigorból azonban nem enged.
+
+```{block, type="handout"}
+Számítógépes munka bemutatásához R statisztikai környezet alatti illusztrációk
+```
+
+Manapság ökonometria elképzelhetetlen számítógépes támogatás nélkül. Bár a jegyzetnek nem kifejezett célja ennek megtanítása, de igyekszik hozzá minden segítséget megadni: valamennyi eredmény előállítását is bemutatja a manapság egyre népszerűbb R statisztikai programcsomag alatt. (Az R általános statisztikai programcsomag, és bár klasszikus orientációja nem kimondottan ökonometriai, erre a célra is egyre jobban használható, kitűnő általános tulajdonságai és a megjelenő kiegészítő csomagok sokaságának köszönhetően.)
+
+```{block, type="handout"}
+Minden visszajelzést örömmel veszek a [tamas.ferenci@medstat.hu](tamas.ferenci@medstat.hu) email-címen
+```
+
+A jegyzettel kapcsolatban minden visszajelzést, véleményt, kritikát a lehető legnagyobb örömmel veszek a [tamas.ferenci@medstat.hu](tamas.ferenci@medstat.hu) email-címen!
+
+A jegyzet weboldala (oktatási segédanyagokkal, technikai információkkal) a [https://github.com/tamas-ferenci/FerenciTamas_Okonometria](https://github.com/tamas-ferenci/FerenciTamas_Okonometria) címen érhető el.
