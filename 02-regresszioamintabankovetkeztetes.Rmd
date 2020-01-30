@@ -1,0 +1,137 @@
+# Regresszió a mintában: következtetés
+
+`r if (!knitr:::is_latex_output()) '
+$\\DeclareMathOperator*{\\argmin}{arg\\,min}$
+$\\DeclareMathOperator*{\\argmax}{arg\\,max}$
+$\\DeclareMathOperator*{\\rank}{rank}$
+$\\def\\uuline#1{\\underline{\\underline{#1}}}$
+'`
+
+Pár fogalmat talán érdemes feleleveníteni következtető statisztikából. Az alapprobléma: a halmaz amire a kérdésünk irányul, a **sokaság** sajnos azonban ennek minden elemét nem tudjuk megfigyelni (azaz lemérni), csak egy részét, a kisebb részhalmaz a **minta**. Ez előfordulhat akkor, ha a sokaság TODO
+
+## A hagyományos legkisebb négyzetek (OLS) elve
+
+Ilyen becslési elv a hagyományos legkisebb négyzetek (ordinary least squares, OLS) elve. Mint általános becslési el, nem kell hozzá semmilyen regresszió, a legközönségesebb következtető statisztikai példán is elmondható. Példaként vegyük az egyik legelemibb kérdést: sokasági várható érték becslése normalitás esetén, tehát a sokaság eloszlása normális (az egyszerűség kedvéért legyen a szórás is ismert, tehát azt nem kell becsülnünk). Ami fontos: bár egy alap következtető statisztika kurzuson nem szokták mondani, de lényegében itt is az a helyzet, hogy egy *modellt* feltételezünk a sokaságra, jelesül: $Y \sim \mathcal{N}\left(\mu,\sigma_0^2\right)$, amit nem mellesleg úgy is írhatnánk, hogy $Y=\mu+\varepsilon$, ahol $\varepsilon\sim\mathcal{N}\left(0,\sigma_0^2\right)$. Most $\mu$ megbecslése céljából veszünk egy $n$ elemű fae (független, azonos eloszlású) mintát a sokaságból; ekkor feltevésünk szerint $Y_i=\mu+\varepsilon_i$ lesz az $i$-edik mintaelem. (A feltevésünk igazából azt jelentette, hogy az $\varepsilon_i$ változók függetlenek és azonos eloszlásúak). Figyeljünk oda a kis és nagybetűkre! A nagy betű valószínűségi változó, valami aminek eloszlása van, sokasági dolog. Kisbetű egy konkrét szám, nem valószínűségi, nincsen eloszlása, mintabeli dolog. Most valaki megkérdezhetné, hogy oké, azt értem, hogy $Y$ miért nagy betű, de az $Y_i$ miért az? Hiszen azt mondtuk, hogy az az egyik mintaelem...! Talán a legjobban úgy lehet ezt elképzelni, hogy a véletlen mintavétel az, hogy megkeverjük az urnát, hogy kihúzzunk belőle egy golyót. Megáll a keverés, nyúlunk bele az urnába, hogy húzzunk: ekkor számunkra az még egy véletlen dolog, hogy mi lesz az elsőként húzott elem, annak eloszlása van (fae mintavétel esetén -- tehát ha a golyókat mindig visszadobjuk, és az urnát mindig jól átkeverjük -- ugyanaz, mint a sokaság, tehát mint az egész urna eloszlása). Ekkor ez még $Y_1$ számunkra. Ekkor kihúzzuk a golyót, és meglátjuk a konkrét értéket: ez lesz $y_1$. Kicsit matematikusabban szólva: kaptunk egy realizációt $Y_1$-ből, ez lesz az $y_1$.
+
+A másik ami fontos: a modellből következik egy *becsült érték* minden mintabeli elemhez, jelen esetben, ha $m$ egy feltételezett érték az ismeretlen sokasági várható értékre, akkor
+	\[
+		\widehat{y_i}=m.
+	\]
+(Itt persze elvileg beszélni kellene arról, hogy még ha tudjuk is, hogy a sokasági várható érték $m$, miért pont az lesz a becslésünk is minden mintaelemre. Fogadjuk el intuitíve, egyébként olyan érvelést használhatnánk mint az előző fejezetben, úgy, hogy az egyetlen magyarázó változónk az $X_1=1$.)
+
+Egy kis kitérő megjegyzés: ha jobban megnézzük a fentieket, akkor láthatjuk, hogy az OLS-elv alkalmazásához igazából nem is kell, hogy a sokasági eloszlást ismerjük, csak annyi a fontos, hogy legyen egy modellünk, és belőle tudjunk becsült értékeket származtatni a ténylegesen is ismert megfigyelésekhez.
+
+És akkor jöhet az OLS-elv! Egy mondatban összefoglalva: az ismeretlen sokasági paraméterre az a becsült érték, amely mellett a tényleges mintabeli értékek, és az adott paraméter melletti, modellből származó becsült értékek közti eltérések négyzetének összege a legkisebb! A megoldandó -- optimalizációs jellegű -- feladat tehát matematikailag:
+	\[
+		\widehat{\mu}=\argmin_m \sum_{i=1}^n \left(y_i-\widehat{y_i}\right)^2=\argmin_m \sum_{i=1}^n \left(y_i-m\right)^2
+	\]
+És ennek megoldása természetesen $\widehat{\mu}=\frac{1}{n}\sum_{i=1}^n y_i=\overline{y}$ ebben a példában.
+
+Egyetlen kiegészítést kell tenni a fentiekhez. Megkaptunk ugyan a becslőt, csakhogy az $\overline{y}$ egyetlen konkrét szám. (Hát persze, mert egy konkrét mintához, a $\left\{y_1,y_2,\ldots,y_n\right\}$ mintához -- kisbetűk! -- tartozik.) Minket azonban alapvető fontossággal fog érdekelni a becslő **mintavételi eloszlása**, tehát, hogy ha újra meg újra mintát veszünk ugyanabból a sokaságból, és mindegyik mintából kiszámoljuk a becslőfüggvény értékét (jelen esetben a mintaátlagot), akkor annak mi lesz az eloszlása. A becslőfüggvényünk az igazából egy *transzformáció* a mintaelemekkel (,,add össze őket és oszd el a mintanagysággal''), de ha egyszer ez a transzformáció megvan, azt nyugodtan ráereszthetjük valószínűségi változókra is, nem csak számokra! Ami magyarán azt fogja jelenteni, hogy felírjuk ugyanazt -- csak épp kisbetűk helyett nagybetűkkel. Jelen példában a becslőfüggvényünk: $\frac{1}{n}\sum_{i=1}^n Y_i=\overline{Y}$, és íme, ennek már nagyon is eloszlása van, hiszen egy valószínűségi változó maga is -- ez az eloszlás lesz a mintavételi eloszlás. Megvizsgálhatóak a tulajdonságai, megnézhetjük, hogy a várható értéke egyezik-e a sokasági paraméterrel (torzítatlanság), hogy mekkora a szórása (hatásosság), hogy hogyan viselkedik, ha $n$ egyre nagyobb (konzisztencia) és így tovább.
+
+## Lineáris regresszió becslése OLS-elven
+
+Most vegyük elő a lineáris regressziónkat! (Ahol ezt közszemérem-sértés veszélye nélkül megtehetjük.) Azt látjuk, hogy ott eddig a sokaságról beszéltünk, feltettünk egy modellt (*ugyanúgy mint az előbbi példában*), jó, lehet, hogy egy kicsit bonyolultabbat, de akkor is, ugyanúgy egy sokaságra vonatkozó modell, amiből, megint csak pontosan ugyanúgy mint az előbbi példában, tudunk egy becsült értéket előállítani minden mintaelemhez. Ez lehetővé teszi, hogy az ismeretlen paramétereket OLS-elven megbecsüljük!
+
+Lássuk a részleteket. A változóink az $\left(Y,X_1,X_2,\ldots,X_k\right)$, ezekre vegyünk egy $n$ elemű mintát; az $i$-edik mintaelemet jelölje $\left(Y_i,X_{i1},X_{i2},\ldots,X_{ik}\right)$. Természetesen a modellünk ezekre is igaz lesz, tehát írhatjuk, hogy
+\[
+  Y_i = \beta_0 + \beta_1 X_{i1} + \beta_2 X_{i2} + \ldots + \beta_k X_{ik} + \varepsilon_i.
+\]
+Ez minden $i$-re teljesül, tehát ha nagyon elszántak vagyunk, akkor $n$ ilyen egyenletet írhatnánk fel:
+\begin{align*}
+  Y_1 &= \beta_0 + \beta_1 X_{11} + \beta_2 X_{12} + \ldots + \beta_k X_{1k} + \varepsilon_1 \\
+  Y_2 &= \beta_0 + \beta_1 X_{21} + \beta_2 X_{22} + \ldots + \beta_k X_{2k} + \varepsilon_2 \\
+  \ldots \\
+  Y_n &= \beta_0 + \beta_1 X_{n1} + \beta_2 X_{n2} + \ldots + \beta_k X_{nk} + \varepsilon_n \\
+\end{align*}
+
+Az $i$-edik mintaelem realizációja az $\left(y_i,x_{i1},x_{i2},\ldots,x_{ik}\right)$. (A minta egyelőre legyen fae -- hogy ez mennyire jó feltevés, arról később még fogunk beszélni.)
+
+Ha $b_0, b_1, \ldots, b_k$-val jelöljük a feltételezett sokasági paramétereket, akkor a becslés
+\[
+  \widehat{y_i}=b_0 + b_1 x_{i1} + b_2 x_{i2} + \ldots + b_k x_{ik}
+\]
+lesz az $i$-edik mintaelemre. (Itt szerencsére nincs mit gondolkozni, hiszen azt az előző fejezetben részletesen levezettük, hogy ez lesz a legjobb becslés adott $\mathbf{x}$ mellett.)
+
+Most hogy megvannak a becsült értékek ($\widehat{y_i}$) és a tényleges értékek ($y_i$), betű szerint ugyanazt az optimalizációs feladatot kell felírnunk, mint az előbb, csak $\widehat{y_i}$ lesz kicsit hosszabb, ha kifejtjük:
+\begin{align*}
+		&\left(\widehat{\beta_0},\widehat{\beta_1},\widehat{\beta_2},\ldots,\widehat{\beta_k}\right)=\argmin_{b_0,b_1,b_2,\ldots,b_k} \sum_{i=1}^n \left(y_i-\widehat{y_i}\right)^2=\\
+		&=\argmin_{b_0,b_1,b_2,\ldots,b_k} \sum_{i=1}^n \left[y_i-\left(b_0 + b_1 x_{i1} + b_2 x_{i2} + \ldots + b_k x_{ik}\right)\right]^2
+\end{align*}
+Annyi bonyolódottság van, hogy itt most *több* paramétert kell becsülni, de ez csak a kivitelezést nehezíti, elvileg teljesen ugyanaz a feladat.
+
+Össze ne keverjük $\beta_i$-t, $b_i$-t és $\widehat{\beta_i}$-t! $\beta_i$ a kérdéses sokasági paraméter valódi, tényleges értéke, egy adott, konkrét szám (csak mi nem tudjuk mennyi), $b_i$ egy általunk feltélezett érték rá, mi állítjuk be, választhatunk nagy számot is, kis számot is, tetszés szerint, a fenti optimalizációban végig fogunk vele futni az összes lehetséges értékén, $\widehat{\beta_i}$ pedig a megoldásként kapott *legjobb tippünk* $\beta_i$-re, de ettől még csak tipp, azaz eloszlása lesz, hiszen a mintától is függeni fog, mintáról mintára ingadozni fog (miközben a valódi érték ugyebár állandó -- ez lesz a mintavételi hiba forrása).
+
+Ezt az optimalizációs problémát kell tehát most megoldanunk. Ezt megtehetnénk a fenti formában is, de célszerűbb, ha már most áttérünk a vektoros/mátrixos jelölésekre. Ez eleinte kicsit kényelmetlennek tűnhet, de a magasabb absztrakciós szint később ki fog fizetődni: lehet, hogy most kicsit nehezebben indulunk, de a cserében a bonyolultabb problémák sem lesznek sokkal nehezebbek.
+
+Fogjunk tehát össze mindent értelemszerű vektorokba és mátrixokba! A jelölésrendszer teljes bemutatása végett felírom a mintavétel előtti -- valószínűségi változós -- és a realizálódott értékes alakokat is^[A jelölésrendszer sajnos nem tökéletesen konzisztens, hiszen $\mathbf{X}$ nagybetű, és mégis kisbetűs dolgokat fog össze. Nem akartam szakítani a lineáris algebra hagyományával, hogy a mátrixot nagybetű jelöli, bár ez tényleg keveredik a valószínűségszámítás nagybetűjével. Abból azonban, hogy vastagítás vagy aláhúzás van, mindenképpen világos lesz, hogy valószínűségi változóról vagy realizálódott értékről van szó, még ha a kis és nagy betű nem is segít.]. Az eredményváltozók:
+\[
+  \mathbf{y}=\begin{pmatrix}y_1\\y_2\\ \cdots \\ y_n\end{pmatrix}, \underline{Y}=\begin{pmatrix}Y_1\\Y_2\\ \cdots \\ Y_n\end{pmatrix}
+\]
+A magyarázó változókat nyilván mátrixba kell összefogni, de itt egy kis cselre lesz szükségünk: hozzáveszünk az elejéhez egy csupa 1 oszlopot. (Az így kapott mátrixot a regresszió **design mátrixának** szokás nevezni.) Íme:
+\[
+  \mathbf{X}=\begin{pmatrix}1&x_{11}& x_{12}& \cdots& x_{1k}\\1&x_{21} &x_{22}& \cdots &x_{2k}\\ \vdots&\vdots& \vdots &\ddots &\vdots \\ 1& x_{n1}& x_{n2}& \cdots &x_{nk}\end{pmatrix}, \uuline{X}=\begin{pmatrix}1&X_{11}& X_{12}& \cdots& X_{1k}\\1&X_{21} &X_{22}& \cdots &X_{2k}\\ \vdots&\vdots& \vdots &\ddots &\vdots \\ 1& X_{n1}& X_{n2}& \cdots &X_{nk}\end{pmatrix}
+\]
+Ez a csupa 1 oszlop azért lesz célszerű, mert ha a regressziós koefficienseket egy 
+\[
+  \pmb{\beta}=\begin{pmatrix}\beta_0\\ \beta_1\\ \cdots \\ \beta_k\end{pmatrix}
+\]
+vektorba, a hibatagokbat pedig egy
+\[
+  \pmb{\varepsilon}=\begin{pmatrix}\varepsilon_1\\ \varepsilon_1\\ \cdots \\ \varepsilon_k\end{pmatrix}
+\]
+vektorba fogjuk össze, akkor a korábbi, $n$ darab egyenletből álló, igencsak terjengős felírás helyett nemes egyszerűséggel ezt írhatjuk:
+\[
+  \underline{Y}=\uuline{X} \pmb{\beta} + \pmb{\varepsilon}.
+\]
+És ennyi, pontosan ugyanaz van leírva!
+
+Látható tehát, hogy a csupa 1 oszlop azért kellett, hogy a vektorral való rászorzásnál az legyen a $\beta_0$ szorzója, így az egyenletben tényleg egyszerűen $\beta_0$ fog megjelenni.
+
+Menjünk most vissza az OLS optimalizációs problémájára! Ezekkel a jelölésekkel a kezünkben ugyanis azt is sokkal egyszerűbben felírhatjuk:
+\[
+		\argmin_{\mathbf{b}} \widehat{\mathbf{y}}^T \widehat{\mathbf{y}} = \argmin_{\mathbf{b}} \left(\mathbf{y}-\mathbf{X}\mathbf{b}\right)^T \left(\mathbf{y}-\mathbf{X}\mathbf{b}\right),
+\]
+hiszen számok négyzetösszegét megkapjuk, ha összefogjuk őket egy vektorba, és vesszük ezen vektor saját transzponáltjával vett szorzatát. ($\widehat{\mathbf{y}}$ és $\mathbf{b}$ az értelemszerű vektorok, $\widehat{y_i}$-ket és $b_i$-ket fogják össze.)
+
+Az $\left(\mathbf{y}-\mathbf{X}\mathbf{b}\right)^T \left(\mathbf{y}-\mathbf{X}\mathbf{b}\right)$ hibanégyzetösszeget $ESS$-sel (error sum of squares) is fogjuk jelölni^[Sajnos néhány irodalom az általunk használt $ESS$-re inkább az $RSS$-t (residual sum of squares) rövidítést használja, ami a jelölési zavarok legszerencsétlenebb típusa, ugyanis az $RSS$-t majd később mi is fogjuk használni, csak épp másra. Éppen ezért, ha ilyenekről olvasunk, mindig tisztázni kell, hogy a könyv vagy program írói mit értenek alatta.].
+
+És akkor essünk neki: oldjuk meg ezt az optimalizációt! Először alakítsuk át a célfüggvényt, bontsuk fel a zárójeleket:
+\[
+	\argmin_{\mathbf{b}} \left(\mathbf{y}-\mathbf{X}\mathbf{b}\right)^T\left(\mathbf{y}-\mathbf{X}\mathbf{b}\right)=\argmin_{\mathbf{b}} \left[\mathbf{y}^T \mathbf{y}-2\mathbf{b}^T\mathbf{X}^T\mathbf{y}+\mathbf{b}^T\mathbf{X}^T\mathbf{X}\mathbf{b}\right].
+\]
+Itt egyszerű algebrai átalakításokat végzünk (és a definíciókat használjuk), hiszen a zárójeleket felbontani, műveleteket elvégezni, mátrixokkal/vektorokkal is hasonlóan kell mint valós számokkal. (A transzponálás tagonként elvégezhető, azaz $\left(\mathbf{a}-\mathbf{b}\right)^T=\mathbf{a}^T-\mathbf{b}^T$.) Egyedül annyit kell észrevenni, hogy a $\mathbf{y}^T\mathbf{X}\mathbf{b}$ egy egyszerű valós szám, ezért megegyezik a saját transzponáltjával, $\mathbf{b}^T\mathbf{X}^T\mathbf{y}$-nal. Ezért írhattunk $-\left(\mathbf{X}\mathbf{b}\right)^T\mathbf{y}-\mathbf{y}^T\mathbf{X}\mathbf{b}$ helyett egyszerűen -- például -- $-2\mathbf{b}^T\mathbf{X}^T\mathbf{y}$-t. (Itt mindenhol felhasználtuk, hogy a transzponálás megfordítja a szorzás sorrendjét: $\left(\mathbf{A}\mathbf{B}\right)^T=\mathbf{A}^T\mathbf{B}^T$.)
+
+Most jön a minimum megkeresése. Az ember rávágja, hogy deriválni kell, de itt ez picit zűrősebb, hiszen a függvényünk többváltozós (ráadásul az is határozatlan, hogy pontosan hányváltozós). Itt jelentkezik igazán a mátrixos jelölésrendszer előnye. A $\mathbf{y}^T \mathbf{y}-2\mathbf{y}^T\mathbf{X}\mathbf{b}+\mathbf{b}^T\mathbf{X}^T\mathbf{X}\mathbf{b}$ lényegében egy ,,másodfokú kifejezés'' többváltozós értelemben (az $ax^2+bx+c$ többváltozós megfelelője), és ami igazán szép: pont ahogy az $ax^2+bx+c$ lederiválható a változója ($x$) szerint (eredmény $2ax+b$), ugyanúgy ez is lederiválható a változója (azaz $\mathbf{b}$) szerint... és az eredmény az egyváltozóssal teljesen analóg lesz, ahogy fent is látható! (Ez persze bizonyítást igényel! -- lásd többváltozós analízisből.) Bár ezzel átléptünk egyváltozóról többváltozóra, a többváltozós analízisbeli eredmények biztosítanak róla, hogy formálisan ugyanúgy végezhető el a deriválás. (Ezt írja le röviden a ,,vektor szerinti deriválás'' jelölése. Egy $\mathbf{b}$ vektor szerinti derivált alatt azt a vektort értjük, melyet úgy kapunk, hogy a deriválandó kifejezést lederiváljuk $\mathbf{b}$ egyes $b_i$ komponensei szerint -- ez ugye egyszerű skalár szerinti deriválás, ami már definiált! --, majd ez eredményeket összefogjuk egy vektorba. Látható tehát, hogy a vektor szerinti derivált egy ugyanolyan dimenziós vektor, mint ami szerint deriváltunk.) Ami igazán erőteljes ebben az eredményben, az nem is egyszerűen az, hogy ,,több'' változónk van, hanem, hogy nem is kell tudnunk, hogy mennyi -- mégis, általában is működik! Az eredmény tehát:
+\begin{align*}
+		&\frac{\partial}{\partial \mathbf{b}} \left[\mathbf{y}^T \mathbf{y}-2\mathbf{b}^T\mathbf{X}^T\mathbf{y}+\mathbf{b}^T\mathbf{X}^T\mathbf{X}\mathbf{b}\right]=\\
+		&=-2\mathbf{X}^T\mathbf{y}+2\mathbf{X}^T\mathbf{X}\mathbf{b}=0 \Rightarrow \widehat{\pmb{\beta}_{\mathrm{OLS}}}=\left(\mathbf{X}^T\mathbf{X}\right)^{-1}\mathbf{X}^T\mathbf{y},
+\end{align*}
+ha $\mathbf{X}^T\mathbf{X}$ nem szinguláris.
+
+Azt, hogy a megtalált stacionaritási pont tényleg minimumhely, úgy ellenőrizhetjük, hogy megvizsgáljuk a Hesse-mátrixot a pontban. A mátrixos jelölésrendszerben ennek az előállítása is egyszerű, még egyszer deriválni kell a függvényt a változó(vektor) szerint:
+\[
+	\frac{\partial^2}{\partial \mathbf{b}^2}  \left[\mathbf{y}^T \mathbf{y}-2\mathbf{b}^T\mathbf{X}^T\mathbf{y}+\mathbf{b}^T\mathbf{X}^T\mathbf{X}\mathbf{b}\right] = \frac{\partial}{\partial \mathbf{b}} \left[ -2\mathbf{X}^T\mathbf{y}+2\mathbf{X}^T\mathbf{X}\mathbf{b} \right]= 2\mathbf{X}^T\mathbf{X}.
+\]
+Az ismert tétel szerint a függvénynek akkor van egy pontban ténylegesen is (lokális, de a konvexitás miatt egyben globális) minimuma, ha ott a Hesse-mátrix pozitív definit. Esetünkben ez minden pontban teljesül. A $\mathbf{X}^T\mathbf{X}$ ugyanis pozitív szemidefinit (ez egy skalárszorzat-mátrix, más néven Gram-mátrix, amelyek mindig pozitív szemidefinitek), a kérdés tehát csak a határozott definitség. Belátható azonban, hogy ennek feltétele, hogy $\mathbf{X}^T\mathbf{X}$ ne legyen szinguláris -- azaz itt is ugyanahhoz a feltételhez értünk! Megjegyezzük, hogy ez pontosan akkor valósul meg, ha az $\mathbf{X}$ teljes oszloprangú. (Erre a kérdésre a modellfeltevések tárgyalásakor még visszatérünk.)
+
+Végül egy számítástechnikai megjegyzés: az együtthatók számításánál a fenti formula direkt követése általában nem a legjobb út, különösen ha sok megfigyelési egység és/vagy változó van. Ekkor nagyméretű mátrixot kéne invertálni, amit numerikus okokból (kerekítési hibák, numerikus instabilitás stb.) általában nem szeretünk. Ehelyett, a különféle programok igyekeznek a direkt mátrixinverziót elkerülni, tipikusan az $\mathbf{X}$ valamilyen célszerű mátrix dekompozíciójával (QR-dekompozíció, Cholesky-dekompozíció). Extrém esetekben még az is elképzelhető, hogy az egzakt, zárt alakú megoldás előállítása helyett valamilyen iteratív optimalizálási algoritmus (gradiens módszer, Newton--Raphson-módszer) alkalmazása a gyakorlatban járható út, annak ellenére is, hogy elvileg van zárt alakban megoldása.
+
+A kapott eredmény nem más, mintha $\mathbf{X}$ Moore-Penrose pszeudoinverzével szoroznánk $\mathbf{y}$-t.
+
+TODO
+
+Végezzük el a fenti műveleteket közvetlenül lekódolva R-ben a már látott kaliforniai iskolás példára, ha a pontszámot a tanár:diák arányt a pontszámmal és a jövedelemmel regresszáljuk:
+```{r}
+y <- CASchools$score
+X <- cbind( 1, CASchools$tsratio, CASchools$income )
+solve( t(X)%*%X )%*%t(X)%*%y
+```
+
+Egy mátrixot a `t` függvénnyel transzponálhatunk és a `solve` függvénnyel invertálhatunk, a `cbind` pedig vektorokat, mint oszlopvektorokat fűz egybe mátrixszá. (Valaki megkérdezheti, hogy akkor az `1` miért működik, hiszen az nem vektor: ez az R egyik jellemző -- kétélű fegyverként viselkedő -- tulajdonsága: megengedi a trehányságot, ugyanis érzékeli, hogy mi a helyzet, és automatikusan egymás alá rakja annyiszor, mint amilyen hosszúak a többi vektorok.)
+
+Természetesen az R tartalmaz beépített parancsot regressziók becslésére:
+```{r}
+lm( score ~ tsratio + income, data = CASchools)
+```
+Az `lm` a lineáris modell rövidítése. Első argumentumban a regressziós egyenletet kell megadnunk, mint egy R formula (tehát `~` felel meg az egyenlőségjelnek, bal oldalán az eredményváltozó, jobb oldalán a magyarázó változók felsorolása, `+` jellel elválasztva.) Az R konstans alapbeállításként rak a modellbe, azt kell külön kérnünk ha nem szeretnénk (egy `-1` hozzáfűzésével az utolsó magyarázó változó után). A `data` argumentum tartalma a szokásos: ha használjuk, akkor a formulában elég a változóneveket leírni, nem kell jelölni, hogy melyik adatkeretre vonatkoznak, mert az R úgy érti, hogy mind a `data` argumentumban megadottra értendő.

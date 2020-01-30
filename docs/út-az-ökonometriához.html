@@ -31,7 +31,7 @@
   
   
 <link rel="prev" href="index.html"/>
-
+<link rel="next" href="regresszió-a-mintában-következtetés.html"/>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -151,6 +151,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="1.3" data-path="út-az-ökonometriához.html"><a href="út-az-ökonometriához.html#a-confounding-megoldásai-kísérlet-és-megfigyelés"><i class="fa fa-check"></i><b>1.3</b> A confounding megoldásai: kísérlet és megfigyelés</a></li>
 <li class="chapter" data-level="1.4" data-path="út-az-ökonometriához.html"><a href="út-az-ökonometriához.html#történetünk-második-szála-az-ökonometriai-modellek-és-a-regresszió"><i class="fa fa-check"></i><b>1.4</b> Történetünk második szála: az ökonometriai modellek és a regresszió</a></li>
 <li class="chapter" data-level="1.5" data-path="út-az-ökonometriához.html"><a href="út-az-ökonometriához.html#regresszió-a-sokaságban"><i class="fa fa-check"></i><b>1.5</b> Regresszió a sokaságban</a></li>
+<li class="chapter" data-level="1.6" data-path="út-az-ökonometriához.html"><a href="út-az-ökonometriához.html#a-szálak-összeérnek"><i class="fa fa-check"></i><b>1.6</b> A szálak összeérnek</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="regresszió-a-mintában-következtetés.html"><a href="regresszió-a-mintában-következtetés.html"><i class="fa fa-check"></i><b>2</b> Regresszió a mintában: következtetés</a><ul>
+<li class="chapter" data-level="2.1" data-path="regresszió-a-mintában-következtetés.html"><a href="regresszió-a-mintában-következtetés.html#a-hagyományos-legkisebb-négyzetek-ols-elve"><i class="fa fa-check"></i><b>2.1</b> A hagyományos legkisebb négyzetek (OLS) elve</a></li>
+<li class="chapter" data-level="2.2" data-path="regresszió-a-mintában-következtetés.html"><a href="regresszió-a-mintában-következtetés.html#lineáris-regresszió-becslése-ols-elven"><i class="fa fa-check"></i><b>2.2</b> Lineáris regresszió becslése OLS-elven</a></li>
 </ul></li>
 <li class="divider"></li>
 <li><a href="http://www.medstat.hu/" target="blank">http://www.medstat.hu/</a></li>
@@ -174,11 +179,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="út-az-ökonometriához" class="section level1">
 <h1><span class="header-section-number">1 . fejezet</span> Út az ökonometriához</h1>
-<p><span class="math display">\[
-\DeclareMathOperator*{\argmin}{arg\,min}
-\DeclareMathOperator*{\argmax}{arg\,max}
-\DeclareMathOperator*{\rank}{rank}
-\]</span></p>
+<p><span class="math inline">\(\DeclareMathOperator*{\argmin}{arg\,min}\)</span>
+<span class="math inline">\(\DeclareMathOperator*{\argmax}{arg\,max}\)</span>
+<span class="math inline">\(\DeclareMathOperator*{\rank}{rank}\)</span>
+<span class="math inline">\(\def\uuline#1{\underline{\underline{#1}}}\)</span></p>
 <p>Egy ilyen tudomány esetén az első feladat annak tisztázása, hogy egyáltalán mi az az ökonometria, mire szolgál, és mi szükség van rá a társadalmi-gazdasági jelenségek elemzése során. A kérdést két történetszálon fogjuk végigvezetni (persze mint minden valamirevaló kortás norvég regényben, a szálak végül össze fognak érni).</p>
 <div id="történetünk-első-szála-néhány-motiváló-példa" class="section level2">
 <h2><span class="header-section-number">1.1</span> Történetünk első szála: néhány motiváló példa</h2>
@@ -288,7 +292,7 @@ A későbbiekben erre azt fogjuk mondani, hogy ez egy statisztikai modell. Ennek
 Itt <span class="math inline">\(\varepsilon\)</span> jelzi a fentiekből fakadó bizonytalanságot, a neve: <strong>hibatag</strong>.</p>
 <p>Rövid jelölésként az <span class="math inline">\(X\)</span>-eket gyakran egy vektorba vonjuk össze: <span class="math inline">\(Y=f\left(\underline{X}\right)+\varepsilon\)</span>.</p>
 <p>Az így kapott modellünk már egy teljes értékű statisztikai (ökonometriai) modell! Az ilyen <span class="math inline">\(f\)</span>-et hívjuk (sokasági) <strong>regressziófüggvénynek</strong>.</p>
-<p>Később még többet fogunk vele foglalkozni, de már most is fontos, hogy lássuk, hogy az <span class="math inline">\(f\)</span>-nek van egy nagyon is földhözragadt értelmezése: szeretném megtippelni <span class="math inline">\(Y\)</span> értékét <span class="math inline">\(X\)</span>-ek ismeretében. Hogy ez miért lesz fontos, azt majd később fogjuk látni, de a feladat így is értelmes: ha ismerem egy osztály tanár:diák arányát és a szociális helyzetet, akkor ezek alapján</p>
+<p>Már most is fontos, hogy lássuk, hogy az <span class="math inline">\(f\)</span>-nek van egy nagyon is földhözragadt értelmezése: ezt kell használni, ha szeretném <q>megtippelni</q> <span class="math inline">\(Y\)</span> értékét <span class="math inline">\(X\)</span>-ek ismeretében. Hogy ez miért lesz fontos, azt majd később fogjuk látni, de a feladat így is értelmes: ha ismerem egy osztály tanár:diák arányát és a szociális helyzetet, akkor ezek alapján mit mondhatok a teszteredményéről. Ha ezek tényleg hatnak rá, akkor valamit mondhatok, ezt fejezi ki az <span class="math inline">\(f\)</span>-es rész, <span class="math inline">\(\varepsilon\)</span> pedig azt, amit nem tudok ezek alapján megmondani, azaz ettől lesz ez csak tipp: mindenképp kell számolnom azzal, hogy a valóság ettől a fent említett okok miatt eltér.</p>
 <p>Ez az egyenlet egy <strong>sokasági modell</strong>: azt írja le, hogy a valóság hogyan működik. Pontosan ugyanaz a helyzet, mint bármilyen következtető statisztikai kurzus alapjainál: van a sokaság, amit eloszlásokkal, valószínűségszámítási eszközökkel írunk le, de a tényleges vizsgálatokban mi sem ismerjük. (Tehát nem tudjuk, hogy ezek az eloszlások milyenek.) Ahhoz, hogy megismerjük veszünk egy mintát, ennek a kezeléséhez már statisztika kell, aminek a feladat épp az lesz, hogy következtessünk a sokaságra.</p>
 <p>Most is hasonló a helyzet: mi sem tudhatjuk, hogy milyen <em>eloszlása</em> van a teszteredményeknek, csak van egy 420 elemű mintánk rá nézve; és hasonlóan a többi változóval. Most azonban egy pillanatig leszünk valszámos emberek: ne törődjünk azzal a problémával, hogy a sokaságot igazából nem ismerhetjük, játsszuk azt, hogy ismerjük (tudjuk mik ezek az eloszlások), és vizsgáljuk meg, hogy ebből mire jutunk! Ugyanúgy mint a következtető statisztikánál, ez nagyon hasznos lesz majd később, a számunkra igazán érdekes – statisztikai – feladat megoldásánál is.</p>
 <p>A nem-kísérleti jelleg miatt az az értelmes modell, ha mind az eredményváltozót, mind a magyarázó változókat – és így persze <span class="math inline">\(\varepsilon\)</span>-t is – valószínűségi változónak vesszük. (Ezért használtam eddig is nagy betűket!) Bizonyos egyszerűsített tárgyalások úgy tekintik, mintha az <span class="math inline">\(X\)</span>-ek nem valószínűségi változók lennének, hanem rögzített értékek. Ez a kísérletek világában rendben lehet, ahol mi be tudjuk <em>állítani</em> az <span class="math inline">\(X\)</span>-ek értékét, de ökonometriában, a társadalmi-gazdasági elemzések világában még közelítő feltevésként is értelmetlen.</p>
@@ -355,11 +359,8 @@ amiből már csakugyan látható, hogy <span class="math inline">\(f_{\text{opt}
 \mathbb{E}\left(Y \mid \underline{X}\right)=\mathbb{E}Y+\mathbf{C}_{Y\underline{X}}\mathbf{C}_{\underline{X}\underline{X}}^{-1}\left(\underline{X}-\mathbb{E}\underline{X}\right).
 \]</span></p>
 <p>Egy pillanatra álljunk meg. Eddig feltételes eloszlást csak úgy írtunk, hogy a feltétel az egy konkrét érték (szám vagy vektor) volt: <span class="math inline">\(\mathbb{E}\left(Y \mid \underline{X}=\mathbf{x}\right)\)</span>. De itt valami más szerepel! A magyarázathoz elevenítsünk fel egy valszám definíciót: a <span class="math inline">\(\mathbb{E}\left(Y \mid \underline{X}=\mathbf{x}\right)\)</span> egy <span class="math inline">\(h\)</span> transzformációt definiál (hiszen adott <span class="math inline">\(\mathbf{x}\)</span>-hez hozzárendel egy valós számot), és <span class="math inline">\(\mathbb{E}\left(Y \mid \underline{X}\right)\)</span> alatt <span class="math inline">\(h\left(\underline{X}\right)\)</span>-et értjük. Tehát van értelme az <span class="math inline">\(\mathbb{E}\left(Y \mid \underline{X}\right)\)</span> objektumnak is, és ez egy valószínűségi változó lesz. Számunkra ebből annyi fontos, hogy ha <span class="math inline">\(\mathbb{E}\left(Y \mid \underline{X}\right)\)</span>-t látunk, azt értsük úgy, mint valami, ami <em>minden</em> <span class="math inline">\(\mathbf{x}\)</span> esetén működik, bármikor beírható, hogy így <span class="math inline">\(\mathbb{E}\left(Y \mid \underline{X}=\mathbf{x}\right)\)</span> legyen belőle. Természetesen ez fontos, hogy ha egy egyenletben szerepel, akkor ezt az átírást mindenhol megtegyük, pl. írhatjuk, hogy <span class="math inline">\(\mathbb{E}\left(Y \mid \underline{X}=\mathbf{x}\right)=\mathbb{E}Y+\mathbf{C}_{Y\underline{X}}\mathbf{C}_{\underline{X}\underline{X}}^{-1}\left(\underline{X}-\mathbf{x}\right)\)</span> (hiszen <span class="math inline">\(\mathbf{x}\)</span> várható értéke saját maga). Ez a jelölés tehát egyfajta általánosítás.</p>
-<p>Visszatérve, írhatjuk, hogy
-<span class="math display">\[
-    \mathbb{E}\left(Y \mid \underline{X}\right)=\beta_0 + \beta_1 X_1 + \beta_2 X_2 + \ldots + \beta_k X_k.
-\]</span>
-ha bevezetjük a
+<p>Egy tulajdonságát már ennyi alapján is rögtön láthatjuk a sokasági regressziófuggvénynek: hogy átmegy a várhatóértékek pontján. Hiszen ha a magyarázó változók értéke épp a várhatóértékük, akkor a második tag kiesik, és azt kapjuk, hogy a regressziófüggvény pont az eredményváltozó várható értékét veszi fel.</p>
+<p>Visszatérve, ha bevezetjük a
 <span class="math display">\[
     \beta_0=\mathbb{E}Y-\mathbf{C}_{Y\underline{X}}\mathbf{C}_{\underline{X}\underline{X}}^{-1}\mathbb{E}\underline{X}
 \]</span>
@@ -367,23 +368,59 @@ ha bevezetjük a
 <span class="math display">\[
     \begin{pmatrix}\beta_1&amp;\beta_2&amp; \cdots &amp; \beta_k\end{pmatrix}^T=\mathbf{C}_{Y\underline{X}}\mathbf{C}_{\underline{X}\underline{X}}^{-1}\underline{X}
 \]</span>
-jelöléseket.</p>
+jelöléseket, akkor írhatjuk, hogy
+<span class="math display">\[
+    \mathbb{E}\left(Y \mid \underline{X}\right)=\beta_0 + \beta_1 X_1 + \beta_2 X_2 + \ldots + \beta_k X_k.
+\]</span></p>
+<p>Ebből talán még világosabban látszik a korábbi állítás: hogy többváltozós normális eloszlásnál speciálisan a regressziófüggvény lineáris lesz.</p>
+<p>Érdemes megnézni, hogy a még áttekinthető kétváltozós (<span class="math inline">\(Y\)</span>,<span class="math inline">\(X_1=X\)</span>) esetben ez az általános eredmény mire specializálódik: ekkor azt kapjuk, hogy <span class="math inline">\(\mathbb{E}\left(Y \mid X\right)=\mathbb{E}Y+\frac{\mathrm{cov}\left(X,Y\right)}{\mathbb{D}^2 X}\cdot\left(X_1-\mathbb{E}X\right)\)</span>. Két dolgot vegyünk észre:</p>
+<ul>
+<li>Korreláció megjelenése:
+<span class="math display">\[
+\mathbb{E}\left(Y \mid X\right)=\mathbb{E}Y+\frac{\mathrm{cov}\left(X,Y\right)}{\mathbb{D}^2 X}\left(X-\mathbb{E}X\right)=\mathbb{E}Y+\frac{\mathbb{D}Y}{\mathbb{D} X}\cdot\mathrm{corr}\left(X,Y\right)\cdot\left(X-\mathbb{E}X\right).
+\]</span></li>
+<li>A linearitás megjelenése itt:
+<span class="math display">\[
+\mathbb{E}\left(Y \mid X\right)=\mathbb{E}Y+\frac{\mathrm{cov}\left(X,Y\right)}{\mathbb{D}^2 X}\left(X-\mathbb{E}X\right)=\left(\mathbb{E}Y-\frac{\mathrm{cov}\left(X,Y\right)}{\mathbb{D}^2 X}\cdot \mathbb{E} X\right) + X\cdot \frac{\mathrm{cov}\left(X,Y\right)}{\mathbb{D}^2 X},
+\]</span>
+azaz <span class="math inline">\(\mathbb{E}\left(Y \mid X\right)=\beta_0 + \beta_1 X\)</span>, ha <span class="math inline">\(\beta_0=\left(\mathbb{E}Y-\frac{\mathrm{cov}\left(X,Y\right)}{\mathbb{D}^2 X}\cdot \mathbb{E} X\right)\)</span> és <span class="math inline">\(\beta_1=\frac{\mathrm{cov}\left(X,Y\right)}{\mathbb{D}^2 X}\)</span>.</li>
+</ul>
+<p>És most egy borzasztó fontos dolog következik. Rakjuk össze a puzzle darabjait: egyfelől tudjuk, hogy <span class="math inline">\(Y=f\left(X_1,X_2,\ldots,X_k\right)+\varepsilon\)</span>, másrészt most már azt is megállapítottuk, hogy az itt szereplő <span class="math inline">\(f\)</span> legjobb értéke <span class="math inline">\(\mathbb{E}\left(Y \mid \underline{X}\right)\)</span>, és ez mindig<a href="#fn9" class="footnote-ref" id="fnref9"><sup>9</sup></a> igaz. Tehát azt kaptuk, hogy:
+<span class="math display">\[
+  Y=\mathbb{E}\left(Y \mid \underline{X}\right)+\varepsilon
+\]</span>
+Ez a dekompozíciót szokás a regresszió <q>hibaalakjának</q> (error form) nevezni. Lényegében arról van szó, hogy szétbontjuk az eredményváltozó alakulását egy <q>magyarázóváltozókkal elérhető legjobb becslés</q> (már láttuk: a feltételes várhatóérték) és egy <q>maradék hiba</q> részre (ami marad). A regresszióanalízis a <em>feltételes</em> eloszlásra koncentrál! Ezért elvileg olyasmit kéne írnunk, hogy <q><span class="math inline">\(\left(Y \mid X\right) = \mathbb{E}\left(Y \mid \underline{X}\right)+\varepsilon\)</span></q>, de ezt nem tesszük (az <span class="math inline">\(\left(Y \mid \underline{X}\right)\)</span> objektumot nem szokás definiálni), ehelyett a bal oldalra simán <span class="math inline">\(Y\)</span>-t írunk (de ne feledjük, hogy ez <em>feltételes</em>).</p>
+<p>Nagyon fontos látni, hogy a regresszió <em>mindig</em> felírható így! És ráadásul ez <em>biztosan</em> optimális felírás. A mi választásunk az lesz, hogy majd <span class="math inline">\(\mathbb{E}\left(Y \mid \underline{X}\right)\)</span> helyébe mit írunk be, például <em>ha</em> tudjuk hogy minden változó együttes eloszlása többváltozós normális, akkor azt, hogy <span class="math inline">\(\mathbb{E}\left(Y \mid \underline{X}\right)=\beta_0 + \beta_1 X_1 + \beta_2 X_2 + \ldots + \beta_k X_k\)</span>, és így azt kapjuk, hogy
+<span class="math display">\[
+  Y=\beta_0 + \beta_1 X_1 + \beta_2 X_2 + \ldots + \beta_k X_k+\varepsilon,
+\]</span>
+de vigyázat, ez már – szemben az előző formulával – <em>nem</em> univerzális, csak normalitás esetén érvényes.</p>
+<p>Lehetne <span class="math inline">\(\mathbb{E}\left(Y \mid \underline{X}\right)\)</span> helyébe más is beírni, de mindaddig, amíg jellegre ilyen megoldást használunk, tehát megadjuk a függvény formáját, csak egy vagy több paraméter az, ami meghatározza a konkrét függvényt, szokás <strong>paraméteres regresszióról</strong> beszélni. Ez nem kötelező, lehetne az <span class="math inline">\(\mathbb{E}\left(Y \mid \underline{X}\right)\)</span> anélkül próbálni közelíteni, hogy bármilyen <em>konkrét</em> függvényforma mellett elköteleződnék, ekkor beszélünk nem-paraméteres regresszióról. Ilyenekkel most nem foglalkozunk, csak az érzékeltetés kedvéért egy lehetőség: TODO</p>
+<p>Tegyünk még egy megállapítást, ami most nem tűnik nagyon izgalmasnak, de a későbbiekben rettentő fontos lesz. Annyit kell tudnunk hozzá, hogy a feltételes várható érték is lineáris, valamint, hogyha valaminek kétszer vesszük a várható értékét, az ugyanaz mintha egyszer vennénk, és ez nem csak a szokásos várható értékre, hanem a feltételes várható értékre is igaz:
+<span class="math display">\[
+  \mathbb{E}\left(\varepsilon \mid \underline{X}\right)=\mathbb{E}\left(Y-\mathbb{E}\left(Y \mid \underline{X}\right) \mid \underline{X}\right)=\mathbb{E}\left(Y\mid \underline{X}\right) - \mathbb{E}\left[\mathbb{E}\left(Y\mid \underline{X}\right)\mid \underline{X}\right]=\mathbb{E}\left(Y\mid \underline{X}\right) - \mathbb{E}\left(Y\mid \underline{X}\right)=0.
+\]</span>
+Azaz azt kapjuk, hogy <span class="math inline">\(\mathbb{E}\left(\varepsilon \mid \underline{X}\right)=0\)</span>. Nagyon fontos, hogy értsük, hogy most mit mondunk: <em>ha</em> (!) tényleg – valóságban helyes – <span class="math inline">\(\mathbb{E}\left(Y \mid \underline{X}\right)\)</span>-t használjuk, <em>akkor</em> <span class="math inline">\(\mathbb{E}\left(\varepsilon \mid \underline{X}\right)=0\)</span> <em>kell</em> legyen. Ez azért lesz izgalmas, mert <span class="math inline">\(\mathbb{E}\left(Y \mid \underline{X}\right)\)</span>-t mi sem tudhatjuk biztosan, majd be kell valamit írnunk a helyébe (például azt, hogy <span class="math inline">\(\beta_0 + \beta_1 X_1 + \beta_2 X_2 + \ldots + \beta_k X_k\)</span>). Ez a megállapítás tehát azt mondja, hogy <em>ha</em> beletrafálunk a dologba, <em>akkor</em> <span class="math inline">\(\mathbb{E}\left(\varepsilon \mid \underline{X}\right)=0\)</span> kell legyen. <em>De</em> ha nem (például ezt írjuk be, csak épp közben nem normális az eloszlás), akkor már ez egyáltalán nem biztos, hogy igaz lesz!</p>
+<p>Összefoglalva, ott tartunk, hogy <em>ha</em> az eloszlás normális akkor <span class="math inline">\(\mathbb{E}\left(Y \mid \underline{X}\right)=\beta_0 + \beta_1 X_1 + \beta_2 X_2 + \ldots + \beta_k X_k\)</span> és így <span class="math inline">\(Y=\beta_0 + \beta_1 X_1 + \beta_2 X_2 + \ldots + \beta_k X_k+\varepsilon\)</span>. A bökkenő persze ott van, hogy azt mi magunk sem tudhatjuk, hogy milyen a változóink eloszlása. És itt jön egy fontos döntés. Munkánkat úgy fogjuk megkezdeni, hogy azt mondjuk <em>akármilyen</em> is az eloszlás, mi <em>mindenképp</em> az <span class="math inline">\(Y=\beta_0 + \beta_1 X_1 + \beta_2 X_2 + \ldots + \beta_k X_k+\varepsilon\)</span> modellt használjuk! Ezt fogjuk <strong>lineáris regressziónak</strong> nevezni. Még egyszer: ez egy helyes döntés, ha normális a változóink eloszlása, de különben nem. Ha nem ismerjük a változóink eloszlását, akkor ez többé már nem egy matematikailag levezethető szükségszerűség, hanem egy <em>választás</em> a részünkről. De több ok szól e választás mellett:</p>
+<ul>
+<li>Többváltozós normalitásnál egzaktan ez a helyzet</li>
+<li>Más esetekben ugyan nem, de cserében nagyon kellemesek a tulajdonságai, különösen ami az interpretációt illeti</li>
+<li>Az is elmondható, hogy – a Taylor-sorfejtés logikáját követve – bármi más is a jó függvényforma, legalábbis <em>lokálisan</em> ez is jó közelítés kell legyen</li>
+<li>Bár első ránézésre ez vegytisztán lineáris, valójában majd látni fogjuk, hogy egy sor nemlineáris modell is <em>visszavezethető</em> erre a modellre</li>
+<li>És végezetül egy lényeges szempont: lesznek majd eszközeink arra, hogy észrevegyük, hogy rossz volt ez a választás, és megpróbáljuk kijavítani</li>
+</ul>
+<p>De újfent nagyon fontos hangsúlyozni, hogy a valós munka során, ahol nem tudjuk mik az eloszlások, azt, hogy az <span class="math inline">\(Y=\beta_0 + \beta_1 X_1 + \beta_2 X_2 + \ldots + \beta_k X_k+\varepsilon\)</span> fennáll, már nem kezelhetjük matematikai szükségszerűségnek, hanem mint feltételt fel kell tennünk!</p>
+</div>
+<div id="a-szálak-összeérnek" class="section level2">
+<h2><span class="header-section-number">1.6</span> A szálak összeérnek</h2>
+<p>Ezen a ponton összeérnek a szálak. Vegyük csak újra az előbbi alakot (és feltételezzük, hogy a szükséges feltevések teljesültek):
+<span class="math display">\[
+  Y=\beta_0 + \beta_1 X_1 + \beta_2 X_2 + \ldots + \beta_k X_k+\varepsilon.
+\]</span>
+Mi itt</p>
 
 </div>
 </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
 <div class="footnotes">
 <hr />
 <ol start="1">
@@ -395,6 +432,7 @@ jelöléseket.</p>
 <li id="fn6"><p>Érdemes megfigyelni (ez kétváltozós esetben jó szemmértékkel még érzékelhető vizuálisan is), hogy a regressziófüggvény <em>nem</em> az ellipszisek nagytengelye – tehát a korrelációs mátrix megfelelő sajátvektora – irányába mutat! Hanem az ellipszis <q>vízszintesen szélső</q> pontjain megy át.)<a href="út-az-ökonometriához.html#fnref6" class="footnote-back">↩</a></p></li>
 <li id="fn7"><p>A bizonyítást itt elhagyom, lásd például: Bolla-Krámli: Statisztikai következtetések elmélete. Typotex, 2005. 207-208.oldal.<a href="út-az-ökonometriához.html#fnref7" class="footnote-back">↩</a></p></li>
 <li id="fn8"><p>Jelölje <span class="math inline">\(\mathbf{C}_{\underline{X}\underline{X}}\)</span> az <span class="math inline">\(X\)</span>-ek szokásos kovarianciamátrixát, <span class="math inline">\(\mathbf{C}_{Y\underline{X}}\)</span> pedig azt az oszlopvektort, amely sorban az összes <span class="math inline">\(X\)</span> kovarianciáját tartalmazza <span class="math inline">\(Y\)</span>-nal.<a href="út-az-ökonometriához.html#fnref8" class="footnote-back">↩</a></p></li>
+<li id="fn9"><p>Ha szigorúak akarunk lenni, akkor azért annyit hozzá kell tennünk, hogy <em>ha</em> létezik egyáltalán a feltételes várható érték. Vannak eloszlások, amiknek egyszerűen nem létezik várható értéke, úgyhogy ez elvileg nem mindegy, de mi most ilyen helyzetekkel nem fogunk foglalkozni.<a href="út-az-ökonometriához.html#fnref9" class="footnote-back">↩</a></p></li>
 </ol>
 </div>
 <!-- Default Statcounter code for Physcon Research
@@ -418,8 +456,8 @@ alt="ingyen webstatisztika"></a></div></noscript>
           </div>
         </div>
       </div>
-<a href="index.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-
+<a href="index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="regresszió-a-mintában-következtetés.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

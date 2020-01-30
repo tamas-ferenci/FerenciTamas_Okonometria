@@ -1,10 +1,11 @@
 # Út az ökonometriához
 
-\[
-\DeclareMathOperator*{\argmin}{arg\,min}
-\DeclareMathOperator*{\argmax}{arg\,max}
-\DeclareMathOperator*{\rank}{rank}
-\]
+`r if (!knitr:::is_latex_output()) '
+$\\DeclareMathOperator*{\\argmin}{arg\\,min}$
+$\\DeclareMathOperator*{\\argmax}{arg\\,max}$
+$\\DeclareMathOperator*{\\rank}{rank}$
+$\\def\\uuline#1{\\underline{\\underline{#1}}}$
+'`
 
 Egy ilyen tudomány esetén az első feladat annak tisztázása, hogy egyáltalán mi az az ökonometria, mire szolgál, és mi szükség van rá a társadalmi-gazdasági jelenségek elemzése során. A kérdést két történetszálon fogjuk végigvezetni (persze mint minden valamirevaló kortás norvég regényben, a szálak végül össze fognak érni).
 
@@ -165,7 +166,7 @@ Rövid jelölésként az $X$-eket gyakran egy vektorba vonjuk össze: $Y=f\left(
 
 Az így kapott modellünk már egy teljes értékű statisztikai (ökonometriai) modell! Az ilyen $f$-et hívjuk (sokasági) **regressziófüggvénynek**.
 
-Később még többet fogunk vele foglalkozni, de már most is fontos, hogy lássuk, hogy az $f$-nek van egy nagyon is földhözragadt értelmezése: ezt kell használni, ha szeretném "megtippelni" $Y$ értékét $X$-ek ismeretében. Hogy ez miért lesz fontos, azt majd később fogjuk látni, de a feladat így is értelmes: ha ismerem egy osztály tanár:diák arányát és a szociális helyzetet, akkor ezek alapján mit mondhatok a teszteredményéről. Ha ezek tényleg hatnak rá, akkor valamit mondhatok, ezt fejezi ki az $f$-es rész, $\varepsilon$ pedig azt, hogy ez mitől tipp: mindenképp kell számolnom azzal, hogy a valóság ettől a fent említett okok miatt eltér.
+Már most is fontos, hogy lássuk, hogy az $f$-nek van egy nagyon is földhözragadt értelmezése: ezt kell használni, ha szeretném "megtippelni" $Y$ értékét $X$-ek ismeretében. Hogy ez miért lesz fontos, azt majd később fogjuk látni, de a feladat így is értelmes: ha ismerem egy osztály tanár:diák arányát és a szociális helyzetet, akkor ezek alapján mit mondhatok a teszteredményéről. Ha ezek tényleg hatnak rá, akkor valamit mondhatok, ezt fejezi ki az $f$-es rész, $\varepsilon$ pedig azt, amit nem tudok ezek alapján megmondani, azaz ettől lesz ez csak tipp: mindenképp kell számolnom azzal, hogy a valóság ettől a fent említett okok miatt eltér.
 
 Ez az egyenlet egy **sokasági modell**: azt írja le, hogy a valóság hogyan működik. Pontosan ugyanaz a helyzet, mint bármilyen következtető statisztikai kurzus alapjainál: van a sokaság, amit eloszlásokkal, valószínűségszámítási eszközökkel írunk le, de a tényleges vizsgálatokban mi sem ismerjük. (Tehát nem tudjuk, hogy ezek az eloszlások milyenek.) Ahhoz, hogy megismerjük veszünk egy mintát, ennek a kezeléséhez már statisztika kell, aminek a feladat épp az lesz, hogy következtessünk a sokaságra.
 
@@ -317,6 +318,8 @@ Nem lehet nem észrevenni: ezek mind egy egyenesre^[Érdemes megfigyelni (ez ké
 
 Egy pillanatra álljunk meg. Eddig feltételes eloszlást csak úgy írtunk, hogy a feltétel az egy konkrét érték (szám vagy vektor) volt: $\mathbb{E}\left(Y \mid \underline{X}=\mathbf{x}\right)$. De itt valami más szerepel! A magyarázathoz elevenítsünk fel egy valszám definíciót: a $\mathbb{E}\left(Y \mid \underline{X}=\mathbf{x}\right)$ egy $h$ transzformációt definiál (hiszen adott $\mathbf{x}$-hez hozzárendel egy valós számot), és $\mathbb{E}\left(Y \mid \underline{X}\right)$ alatt $h\left(\underline{X}\right)$-et értjük. Tehát van értelme az $\mathbb{E}\left(Y \mid \underline{X}\right)$ objektumnak is, és ez egy valószínűségi változó lesz. Számunkra ebből annyi fontos, hogy ha $\mathbb{E}\left(Y \mid \underline{X}\right)$-t látunk, azt értsük úgy, mint valami, ami *minden* $\mathbf{x}$ esetén működik, bármikor beírható, hogy így $\mathbb{E}\left(Y \mid \underline{X}=\mathbf{x}\right)$ legyen belőle. Természetesen ez fontos, hogy ha egy egyenletben szerepel, akkor ezt az átírást mindenhol megtegyük, pl. írhatjuk, hogy $\mathbb{E}\left(Y \mid \underline{X}=\mathbf{x}\right)=\mathbb{E}Y+\mathbf{C}_{Y\underline{X}}\mathbf{C}_{\underline{X}\underline{X}}^{-1}\left(\underline{X}-\mathbf{x}\right)$ (hiszen $\mathbf{x}$ várható értéke saját maga). Ez a jelölés tehát egyfajta általánosítás.
 
+Egy tulajdonságát már ennyi alapján is rögtön láthatjuk a sokasági regressziófuggvénynek: hogy átmegy a várhatóértékek pontján. Hiszen ha a magyarázó változók értéke épp a várhatóértékük, akkor a második tag kiesik, és azt kapjuk, hogy a regressziófüggvény pont az eredményváltozó várható értékét veszi fel.
+
 Visszatérve, ha bevezetjük a
 \[
 	\beta_0=\mathbb{E}Y-\mathbf{C}_{Y\underline{X}}\mathbf{C}_{\underline{X}\underline{X}}^{-1}\mathbb{E}\underline{X}
@@ -330,6 +333,54 @@ jelöléseket, akkor írhatjuk, hogy
 	\mathbb{E}\left(Y \mid \underline{X}\right)=\beta_0 + \beta_1 X_1 + \beta_2 X_2 + \ldots + \beta_k X_k.
 \]
 
-Ebből talán még világosabban látszik a korábbi állítás: hogy többváltozós normális eloszlásnál tehát speciálisan a regressziófüggvény lineáris lesz.
+Ebből talán még világosabban látszik a korábbi állítás: hogy többváltozós normális eloszlásnál speciálisan a regressziófüggvény lineáris lesz.
 
-Érdemes megnézni, hogy a még áttekinthető kétváltozós esetben ez az általános eredmény mire specializálódik:
+Érdemes megnézni, hogy a még áttekinthető kétváltozós ($Y$,$X_1=X$) esetben ez az általános eredmény mire specializálódik: ekkor azt kapjuk, hogy $\mathbb{E}\left(Y \mid X\right)=\mathbb{E}Y+\frac{\mathrm{cov}\left(X,Y\right)}{\mathbb{D}^2 X}\cdot\left(X_1-\mathbb{E}X\right)$. Két dolgot vegyünk észre:
+
+- Korreláció megjelenése:
+\[
+  \mathbb{E}\left(Y \mid X\right)=\mathbb{E}Y+\frac{\mathrm{cov}\left(X,Y\right)}{\mathbb{D}^2 X}\left(X-\mathbb{E}X\right)=\mathbb{E}Y+\frac{\mathbb{D}Y}{\mathbb{D} X}\cdot\mathrm{corr}\left(X,Y\right)\cdot\left(X-\mathbb{E}X\right).
+\]
+- A linearitás megjelenése itt:
+\[
+  \mathbb{E}\left(Y \mid X\right)=\mathbb{E}Y+\frac{\mathrm{cov}\left(X,Y\right)}{\mathbb{D}^2 X}\left(X-\mathbb{E}X\right)=\left(\mathbb{E}Y-\frac{\mathrm{cov}\left(X,Y\right)}{\mathbb{D}^2 X}\cdot \mathbb{E} X\right) + X\cdot \frac{\mathrm{cov}\left(X,Y\right)}{\mathbb{D}^2 X},
+\]
+azaz $\mathbb{E}\left(Y \mid X\right)=\beta_0 + \beta_1 X$, ha $\beta_0=\left(\mathbb{E}Y-\frac{\mathrm{cov}\left(X,Y\right)}{\mathbb{D}^2 X}\cdot \mathbb{E} X\right)$ és $\beta_1=\frac{\mathrm{cov}\left(X,Y\right)}{\mathbb{D}^2 X}$.
+
+És most egy borzasztó fontos dolog következik. Rakjuk össze a puzzle darabjait: egyfelől tudjuk, hogy $Y=f\left(X_1,X_2,\ldots,X_k\right)+\varepsilon$, másrészt most már azt is megállapítottuk, hogy az itt szereplő $f$ legjobb értéke $\mathbb{E}\left(Y \mid \underline{X}\right)$, és ez mindig^[Ha szigorúak akarunk lenni, akkor azért annyit hozzá kell tennünk, hogy *ha* létezik egyáltalán a feltételes várható érték. Vannak eloszlások, amiknek egyszerűen nem létezik várható értéke, úgyhogy ez elvileg nem mindegy, de mi most ilyen helyzetekkel nem fogunk foglalkozni.] igaz. Tehát azt kaptuk, hogy:
+\[
+  Y=\mathbb{E}\left(Y \mid \underline{X}\right)+\varepsilon
+\]
+Ez a dekompozíciót szokás a regresszió "hibaalakjának" (error form) nevezni. Lényegében arról van szó, hogy szétbontjuk az eredményváltozó alakulását egy 'magyarázóváltozókkal elérhető legjobb becslés' (már láttuk: a feltételes várhatóérték) és egy 'maradék hiba' részre (ami marad). A regresszióanalízis a *feltételes* eloszlásra koncentrál! Ezért elvileg olyasmit kéne írnunk, hogy "$\left(Y \mid X\right) = \mathbb{E}\left(Y \mid \underline{X}\right)+\varepsilon$", de ezt nem tesszük (az $\left(Y \mid \underline{X}\right)$ objektumot nem szokás definiálni), ehelyett a bal oldalra simán $Y$-t írunk (de ne feledjük, hogy ez *feltételes*).
+
+Nagyon fontos látni, hogy a regresszió *mindig* felírható így! És ráadásul ez *biztosan* optimális felírás. A mi választásunk az lesz, hogy majd $\mathbb{E}\left(Y \mid \underline{X}\right)$ helyébe mit írunk be, például *ha* tudjuk hogy minden változó együttes eloszlása többváltozós normális, akkor azt, hogy $\mathbb{E}\left(Y \mid \underline{X}\right)=\beta_0 + \beta_1 X_1 + \beta_2 X_2 + \ldots + \beta_k X_k$, és így azt kapjuk, hogy
+\[
+  Y=\beta_0 + \beta_1 X_1 + \beta_2 X_2 + \ldots + \beta_k X_k+\varepsilon,
+\]
+de vigyázat, ez már -- szemben az előző formulával -- *nem* univerzális, csak normalitás esetén érvényes.
+
+Lehetne $\mathbb{E}\left(Y \mid \underline{X}\right)$ helyébe más is beírni, de mindaddig, amíg jellegre ilyen megoldást használunk, tehát megadjuk a függvény formáját, csak egy vagy több paraméter az, ami meghatározza a konkrét függvényt, szokás **paraméteres regresszióról** beszélni. Ez nem kötelező, lehetne az $\mathbb{E}\left(Y \mid \underline{X}\right)$ anélkül próbálni közelíteni, hogy bármilyen *konkrét* függvényforma mellett elköteleződnék, ekkor beszélünk nem-paraméteres regresszióról. Ilyenekkel most nem foglalkozunk, csak az érzékeltetés kedvéért egy lehetőség: TODO 
+
+Tegyünk még egy megállapítást, ami most nem tűnik nagyon izgalmasnak, de a későbbiekben rettentő fontos lesz. Annyit kell tudnunk hozzá, hogy a feltételes várható érték is lineáris, valamint, hogyha valaminek kétszer vesszük a várható értékét, az ugyanaz mintha egyszer vennénk, és ez nem csak a szokásos várható értékre, hanem a feltételes várható értékre is igaz:
+\[
+  \mathbb{E}\left(\varepsilon \mid \underline{X}\right)=\mathbb{E}\left(Y-\mathbb{E}\left(Y \mid \underline{X}\right) \mid \underline{X}\right)=\mathbb{E}\left(Y\mid \underline{X}\right) - \mathbb{E}\left[\mathbb{E}\left(Y\mid \underline{X}\right)\mid \underline{X}\right]=\mathbb{E}\left(Y\mid \underline{X}\right) - \mathbb{E}\left(Y\mid \underline{X}\right)=0.
+\]
+Azaz azt kapjuk, hogy $\mathbb{E}\left(\varepsilon \mid \underline{X}\right)=0$. Nagyon fontos, hogy értsük, hogy most mit mondunk: *ha* (!) tényleg -- valóságban helyes -- $\mathbb{E}\left(Y \mid \underline{X}\right)$-t használjuk, *akkor* $\mathbb{E}\left(\varepsilon \mid \underline{X}\right)=0$ *kell* legyen. Ez azért lesz izgalmas, mert $\mathbb{E}\left(Y \mid \underline{X}\right)$-t mi sem tudhatjuk biztosan, majd be kell valamit írnunk a helyébe (például azt, hogy $\beta_0 + \beta_1 X_1 + \beta_2 X_2 + \ldots + \beta_k X_k$). Ez a megállapítás tehát azt mondja, hogy *ha* beletrafálunk a dologba, *akkor* $\mathbb{E}\left(\varepsilon \mid \underline{X}\right)=0$ kell legyen. *De* ha nem (például ezt írjuk be, csak épp közben nem normális az eloszlás), akkor már ez egyáltalán nem biztos, hogy igaz lesz!
+
+Összefoglalva, ott tartunk, hogy *ha* az eloszlás normális akkor $\mathbb{E}\left(Y \mid \underline{X}\right)=\beta_0 + \beta_1 X_1 + \beta_2 X_2 + \ldots + \beta_k X_k$ és így $Y=\beta_0 + \beta_1 X_1 + \beta_2 X_2 + \ldots + \beta_k X_k+\varepsilon$. A bökkenő persze ott van, hogy azt mi magunk sem tudhatjuk, hogy milyen a változóink eloszlása. És itt jön egy fontos döntés. Munkánkat úgy fogjuk megkezdeni, hogy azt mondjuk *akármilyen* is az eloszlás, mi *mindenképp* az $Y=\beta_0 + \beta_1 X_1 + \beta_2 X_2 + \ldots + \beta_k X_k+\varepsilon$ modellt használjuk! Ezt fogjuk **lineáris regressziónak** nevezni. Még egyszer: ez egy helyes döntés, ha normális a változóink eloszlása, de különben nem. Ha nem ismerjük a változóink eloszlását, akkor ez többé már nem egy matematikailag levezethető szükségszerűség, hanem egy *választás* a részünkről. De több ok szól e választás mellett:
+
+- Többváltozós normalitásnál egzaktan ez a helyzet
+- Más esetekben ugyan nem, de cserében nagyon kellemesek a tulajdonságai, különösen ami az interpretációt illeti
+- Az is elmondható, hogy -- a Taylor-sorfejtés logikáját követve -- bármi más is a jó függvényforma, legalábbis *lokálisan* ez is jó közelítés kell legyen
+- Bár első ránézésre ez vegytisztán lineáris, valójában majd látni fogjuk, hogy egy sor nemlineáris modell is *visszavezethető* erre a modellre
+- És végezetül egy lényeges szempont: lesznek majd eszközeink arra, hogy észrevegyük, hogy rossz volt ez a választás, és megpróbáljuk kijavítani
+
+De újfent nagyon fontos hangsúlyozni, hogy a valós munka során, ahol nem tudjuk mik az eloszlások, azt, hogy az $Y=\beta_0 + \beta_1 X_1 + \beta_2 X_2 + \ldots + \beta_k X_k+\varepsilon$ fennáll, már nem kezelhetjük matematikai szükségszerűségnek, hanem mint feltételt fel kell tennünk!
+
+## A szálak összeérnek
+
+Ezen a ponton összeérnek a szálak. Vegyük csak újra az előbbi alakot (és feltételezzük, hogy a szükséges feltevések teljesültek):
+\[
+  Y=\beta_0 + \beta_1 X_1 + \beta_2 X_2 + \ldots + \beta_k X_k+\varepsilon.
+\]
+Mi itt 
