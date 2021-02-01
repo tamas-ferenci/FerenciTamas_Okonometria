@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Ökonometria</title>
   <meta name="description" content="Az ökonometria a társadalmi-gazdasági jelenségek kvantitatív, empirikus vizsgálatának, modellezésének tudománya. A jegyzet ezt tárgyalja, kerülve a mély matematikai részleteket, a hangsúlyt inkább a módszerek sokféleségének bemutatására helyezve. A számításokat mindenhol R statisztikai környezet alatt szemlélti." />
-  <meta name="generator" content="bookdown 0.17 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Ökonometria" />
   <meta property="og:type" content="book" />
@@ -21,7 +21,7 @@
   <meta name="twitter:description" content="Az ökonometria a társadalmi-gazdasági jelenségek kvantitatív, empirikus vizsgálatának, modellezésének tudománya. A jegyzet ezt tárgyalja, kerülve a mély matematikai részleteket, a hangsúlyt inkább a módszerek sokféleségének bemutatására helyezve. A számításokat mindenhol R statisztikai környezet alatt szemlélti." />
   <meta name="twitter:image" content="https://tamas-ferenci.github.io/FerenciTamas_Okonometria/FerenciTamas_Okonometria_cover.png" />
 
-<meta name="author" content="Ferenci Tamás," />
+<meta name="author" content="Ferenci Tamás, " />
 
 
 
@@ -31,7 +31,8 @@
   
   
 
-<link rel="next" href="út-az-ökonometriához.html"/>
+<link rel="next" href="út-a-többváltozós-regresszióhoz.html"/>
+<script src="libs/header-attrs-2.6/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -61,25 +62,26 @@
 
 
 <style type="text/css">
-a.sourceLine { display: inline-block; line-height: 1.25; }
-a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
-a.sourceLine:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
 pre.sourceCode { margin: 0; }
 @media screen {
 div.sourceCode { overflow: auto; }
 }
 @media print {
-code.sourceCode { white-space: pre-wrap; }
-a.sourceLine { text-indent: -1em; padding-left: 1em; }
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
-pre.numberSource a.sourceLine
-  { position: relative; left: -4em; }
-pre.numberSource a.sourceLine::before
-  { content: attr(title);
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
     position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; pointer-events: all; display: inline-block;
+    border: none; display: inline-block;
     -webkit-touch-callout: none; -webkit-user-select: none;
     -khtml-user-select: none; -moz-user-select: none;
     -ms-user-select: none; user-select: none;
@@ -88,9 +90,9 @@ pre.numberSource a.sourceLine::before
   }
 pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
 div.sourceCode
-  {  }
+  {   }
 @media screen {
-a.sourceLine::before { text-decoration: underline; }
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
@@ -140,22 +142,52 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <li class="divider"></li>
 <li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Előszó</a></li>
-<li class="chapter" data-level="1" data-path="út-az-ökonometriához.html"><a href="út-az-ökonometriához.html"><i class="fa fa-check"></i><b>1</b> Út az ökonometriához</a><ul>
-<li class="chapter" data-level="1.1" data-path="út-az-ökonometriához.html"><a href="út-az-ökonometriához.html#történetünk-első-szála-néhány-motiváló-példa"><i class="fa fa-check"></i><b>1.1</b> Történetünk első szála: néhány motiváló példa</a><ul>
-<li class="chapter" data-level="1.1.1" data-path="út-az-ökonometriához.html"><a href="út-az-ökonometriához.html#hogyan-hat-az-osztálylétszám-a-tanulók-teljesítményére"><i class="fa fa-check"></i><b>1.1.1</b> Hogyan hat az osztálylétszám a tanulók teljesítményére?</a></li>
-<li class="chapter" data-level="1.1.2" data-path="út-az-ökonometriához.html"><a href="út-az-ökonometriához.html#csökkenti-e-a-korrupció-mértékét-a-nők-részvétele-a-politikában"><i class="fa fa-check"></i><b>1.1.2</b> Csökkenti-e a korrupció mértékét a nők részvétele a politikában?</a></li>
-<li class="chapter" data-level="1.1.3" data-path="út-az-ökonometriához.html"><a href="út-az-ökonometriához.html#csalnak-e-az-orosz-választásokon"><i class="fa fa-check"></i><b>1.1.3</b> Csalnak-e az orosz választásokon?</a></li>
-<li class="chapter" data-level="1.1.4" data-path="út-az-ökonometriához.html"><a href="út-az-ökonometriához.html#további-példák"><i class="fa fa-check"></i><b>1.1.4</b> További példák</a></li>
+<li class="chapter" data-level="1" data-path="út-a-többváltozós-regresszióhoz.html"><a href="út-a-többváltozós-regresszióhoz.html"><i class="fa fa-check"></i><b>1</b> Út a többváltozós regresszióhoz</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="út-a-többváltozós-regresszióhoz.html"><a href="út-a-többváltozós-regresszióhoz.html#történetünk-első-szála-néhány-motiváló-példa"><i class="fa fa-check"></i><b>1.1</b> Történetünk első szála: néhány motiváló példa</a>
+<ul>
+<li class="chapter" data-level="1.1.1" data-path="út-a-többváltozós-regresszióhoz.html"><a href="út-a-többváltozós-regresszióhoz.html#hogyan-hat-az-osztálylétszám-a-tanulók-teljesítményére"><i class="fa fa-check"></i><b>1.1.1</b> Hogyan hat az osztálylétszám a tanulók teljesítményére?</a></li>
+<li class="chapter" data-level="1.1.2" data-path="út-a-többváltozós-regresszióhoz.html"><a href="út-a-többváltozós-regresszióhoz.html#csökkenti-e-a-korrupció-mértékét-a-nők-részvétele-a-politikában"><i class="fa fa-check"></i><b>1.1.2</b> Csökkenti-e a korrupció mértékét a nők részvétele a politikában?</a></li>
+<li class="chapter" data-level="1.1.3" data-path="út-a-többváltozós-regresszióhoz.html"><a href="út-a-többváltozós-regresszióhoz.html#csalnak-e-az-orosz-választásokon"><i class="fa fa-check"></i><b>1.1.3</b> Csalnak-e az orosz választásokon?</a></li>
+<li class="chapter" data-level="1.1.4" data-path="út-a-többváltozós-regresszióhoz.html"><a href="út-a-többváltozós-regresszióhoz.html#további-példák"><i class="fa fa-check"></i><b>1.1.4</b> További példák</a></li>
 </ul></li>
-<li class="chapter" data-level="1.2" data-path="út-az-ökonometriához.html"><a href="út-az-ökonometriához.html#a-példák-tanulságai-az-empirikus-adatok-elemzésének-legnagyobb-problémája"><i class="fa fa-check"></i><b>1.2</b> A példák tanulságai: az empirikus adatok elemzésének legnagyobb problémája</a></li>
-<li class="chapter" data-level="1.3" data-path="út-az-ökonometriához.html"><a href="út-az-ökonometriához.html#a-confounding-megoldásai-kísérlet-és-megfigyelés"><i class="fa fa-check"></i><b>1.3</b> A confounding megoldásai: kísérlet és megfigyelés</a></li>
-<li class="chapter" data-level="1.4" data-path="út-az-ökonometriához.html"><a href="út-az-ökonometriához.html#történetünk-második-szála-az-ökonometriai-modellek-és-a-regresszió"><i class="fa fa-check"></i><b>1.4</b> Történetünk második szála: az ökonometriai modellek és a regresszió</a></li>
-<li class="chapter" data-level="1.5" data-path="út-az-ökonometriához.html"><a href="út-az-ökonometriához.html#regresszió-a-sokaságban"><i class="fa fa-check"></i><b>1.5</b> Regresszió a sokaságban</a></li>
-<li class="chapter" data-level="1.6" data-path="út-az-ökonometriához.html"><a href="út-az-ökonometriához.html#a-szálak-összeérnek"><i class="fa fa-check"></i><b>1.6</b> A szálak összeérnek</a></li>
+<li class="chapter" data-level="1.2" data-path="út-a-többváltozós-regresszióhoz.html"><a href="út-a-többváltozós-regresszióhoz.html#a-példák-tanulságai-az-empirikus-adatok-elemzésének-legnagyobb-problémája"><i class="fa fa-check"></i><b>1.2</b> A példák tanulságai: az empirikus adatok elemzésének legnagyobb problémája</a></li>
+<li class="chapter" data-level="1.3" data-path="út-a-többváltozós-regresszióhoz.html"><a href="út-a-többváltozós-regresszióhoz.html#a-confounding-megoldásai-kísérlet-és-megfigyelés"><i class="fa fa-check"></i><b>1.3</b> A confounding megoldásai: kísérlet és megfigyelés</a></li>
+<li class="chapter" data-level="1.4" data-path="út-a-többváltozós-regresszióhoz.html"><a href="út-a-többváltozós-regresszióhoz.html#történetünk-második-szála-a-regressziós-modellek"><i class="fa fa-check"></i><b>1.4</b> Történetünk második szála: a regressziós modellek</a></li>
+<li class="chapter" data-level="1.5" data-path="út-a-többváltozós-regresszióhoz.html"><a href="út-a-többváltozós-regresszióhoz.html#regresszió-a-sokaságban"><i class="fa fa-check"></i><b>1.5</b> Regresszió a sokaságban</a></li>
+<li class="chapter" data-level="1.6" data-path="út-a-többváltozós-regresszióhoz.html"><a href="út-a-többváltozós-regresszióhoz.html#a-szálak-összeérnek"><i class="fa fa-check"></i><b>1.6</b> A szálak összeérnek</a></li>
 </ul></li>
-<li class="chapter" data-level="2" data-path="regresszió-a-mintában-következtetés.html"><a href="regresszió-a-mintában-következtetés.html"><i class="fa fa-check"></i><b>2</b> Regresszió a mintában: következtetés</a><ul>
+<li class="chapter" data-level="2" data-path="regresszió-a-mintában-következtetés.html"><a href="regresszió-a-mintában-következtetés.html"><i class="fa fa-check"></i><b>2</b> Regresszió a mintában: következtetés</a>
+<ul>
 <li class="chapter" data-level="2.1" data-path="regresszió-a-mintában-következtetés.html"><a href="regresszió-a-mintában-következtetés.html#a-hagyományos-legkisebb-négyzetek-ols-elve"><i class="fa fa-check"></i><b>2.1</b> A hagyományos legkisebb négyzetek (OLS) elve</a></li>
 <li class="chapter" data-level="2.2" data-path="regresszió-a-mintában-következtetés.html"><a href="regresszió-a-mintában-következtetés.html#lineáris-regresszió-becslése-ols-elven"><i class="fa fa-check"></i><b>2.2</b> Lineáris regresszió becslése OLS-elven</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="kategoriális-magyarázó-változók.html"><a href="kategoriális-magyarázó-változók.html"><i class="fa fa-check"></i><b>3</b> Kategoriális magyarázó változók</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="kategoriális-magyarázó-változók.html"><a href="kategoriális-magyarázó-változók.html#regresszió-csak-minőségi-változóval-anova"><i class="fa fa-check"></i><b>3.1</b> Regresszió csak minőségi változóval (ANOVA)</a>
+<ul>
+<li class="chapter" data-level="3.1.1" data-path="kategoriális-magyarázó-változók.html"><a href="kategoriális-magyarázó-változók.html#minőségi-változók-a-regresszióban"><i class="fa fa-check"></i><b>3.1.1</b> Minőségi változók a regresszióban</a></li>
+<li class="chapter" data-level="3.1.2" data-path="kategoriális-magyarázó-változók.html"><a href="kategoriális-magyarázó-változók.html#dummy-változó-fogalma"><i class="fa fa-check"></i><b>3.1.2</b> Dummy változó fogalma</a></li>
+<li class="chapter" data-level="3.1.3" data-path="kategoriális-magyarázó-változók.html"><a href="kategoriális-magyarázó-változók.html#kódolás"><i class="fa fa-check"></i><b>3.1.3</b> Kódolás</a></li>
+<li class="chapter" data-level="3.1.4" data-path="kategoriális-magyarázó-változók.html"><a href="kategoriális-magyarázó-változók.html#referencia-kódolás"><i class="fa fa-check"></i><b>3.1.4</b> Referencia-kódolás</a></li>
+<li class="chapter" data-level="3.1.5" data-path="kategoriális-magyarázó-változók.html"><a href="kategoriális-magyarázó-változók.html#dummy-változó-csapda"><i class="fa fa-check"></i><b>3.1.5</b> Dummy változó csapda</a></li>
+<li class="chapter" data-level="3.1.6" data-path="kategoriális-magyarázó-változók.html"><a href="kategoriális-magyarázó-változók.html#triviális-kódolás-konstans-nélkül"><i class="fa fa-check"></i><b>3.1.6</b> Triviális kódolás konstans nélkül</a></li>
+<li class="chapter" data-level="3.1.7" data-path="kategoriális-magyarázó-változók.html"><a href="kategoriális-magyarázó-változók.html#referencia-kódolás-konstanssal"><i class="fa fa-check"></i><b>3.1.7</b> Referencia-kódolás konstanssal</a></li>
+<li class="chapter" data-level="3.1.8" data-path="kategoriális-magyarázó-változók.html"><a href="kategoriális-magyarázó-változók.html#együtthatók-értelmezése-referencia-kódolásnál"><i class="fa fa-check"></i><b>3.1.8</b> Együtthatók értelmezése referencia-kódolásnál</a></li>
+<li class="chapter" data-level="3.1.9" data-path="kategoriális-magyarázó-változók.html"><a href="kategoriális-magyarázó-változók.html#fontos-hipotézisvizsgálatok"><i class="fa fa-check"></i><b>3.1.9</b> Fontos hipotézisvizsgálatok</a></li>
+<li class="chapter" data-level="3.1.10" data-path="kategoriális-magyarázó-változók.html"><a href="kategoriális-magyarázó-változók.html#egynél-több-kategoriális-magyarázó-változó"><i class="fa fa-check"></i><b>3.1.10</b> Egynél több kategoriális magyarázó változó</a></li>
+</ul></li>
+<li class="chapter" data-level="3.2" data-path="kategoriális-magyarázó-változók.html"><a href="kategoriális-magyarázó-változók.html#regresszió-minőségi-és-mennyiségi-magyarázó-változóval-ancova"><i class="fa fa-check"></i><b>3.2</b> Regresszió minőségi és mennyiségi magyarázó változóval (ANCOVA)</a>
+<ul>
+<li class="chapter" data-level="3.2.1" data-path="kategoriális-magyarázó-változók.html"><a href="kategoriális-magyarázó-változók.html#dummyzás-folytonos-magyarázó-változó-jelenléte-mellett"><i class="fa fa-check"></i><b>3.2.1</b> Dummyzás folytonos magyarázó változó jelenléte mellett}</a></li>
+<li class="chapter" data-level="3.2.2" data-path="kategoriális-magyarázó-változók.html"><a href="kategoriális-magyarázó-változók.html#eltérő-tengelymetszet"><i class="fa fa-check"></i><b>3.2.2</b> Eltérő tengelymetszet</a></li>
+<li class="chapter" data-level="3.2.3" data-path="kategoriális-magyarázó-változók.html"><a href="kategoriális-magyarázó-változók.html#eltérő-meredekség"><i class="fa fa-check"></i><b>3.2.3</b> Eltérő meredekség</a></li>
+<li class="chapter" data-level="3.2.4" data-path="kategoriális-magyarázó-változók.html"><a href="kategoriális-magyarázó-változók.html#eltérő-tengelymetszet-és-meredekség"><i class="fa fa-check"></i><b>3.2.4</b> Eltérő tengelymetszet és meredekség</a></li>
+<li class="chapter" data-level="3.2.5" data-path="kategoriális-magyarázó-változók.html"><a href="kategoriális-magyarázó-változók.html#eltérő-tengelymetszet-és-meredekség-1"><i class="fa fa-check"></i><b>3.2.5</b> Eltérő tengelymetszet és meredekség</a></li>
+<li class="chapter" data-level="3.2.6" data-path="kategoriális-magyarázó-változók.html"><a href="kategoriális-magyarázó-változók.html#hipotézisvizsgálat-a-dummyzott-modellben"><i class="fa fa-check"></i><b>3.2.6</b> Hipotézisvizsgálat a dummyzott modellben</a></li>
+<li class="chapter" data-level="3.2.7" data-path="kategoriális-magyarázó-változók.html"><a href="kategoriális-magyarázó-változók.html#kontraszt-kódolás"><i class="fa fa-check"></i><b>3.2.7</b> Kontraszt-kódolás</a></li>
+<li class="chapter" data-level="3.2.8" data-path="kategoriális-magyarázó-változók.html"><a href="kategoriális-magyarázó-változók.html#egy-terminológiai-megjegyzés"><i class="fa fa-check"></i><b>3.2.8</b> Egy terminológiai megjegyzés</a></li>
+</ul></li>
 </ul></li>
 <li class="divider"></li>
 <li><a href="http://www.medstat.hu/" target="blank">http://www.medstat.hu/</a></li>
@@ -179,8 +211,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="header">
 <h1 class="title">Ökonometria</h1>
-<p class="author"><em>Ferenci Tamás,</em></p>
-<p class="date"><em>2020. január 30.</em></p>
+<p class="author"><em>Ferenci Tamás, </em></p>
+<p class="date"><em>2021. február 1.</em></p>
 </div>
 <div id="előszó" class="section level1 unnumbered">
 <h1>Előszó</h1>
@@ -189,7 +221,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 Az ökonometriai a társadalmi-gazdasági jelenségek számszerűsített, empirikus – azaz tapasztalati, tényadatokon alapuló – vizsgálatának, modellezésének a tudománya
 </p>
 </div>
-<p>Az ökonometriai a társadalmi-gazdasági jelenségek számszerűsített, empirikus – azaz tapasztalati, tényadatokon alapuló – vizsgálatának, modellezésének a tudománya. Szemben azzal, amit esetleg a név sugallhat, közel sem csak közgazdászoknak fontos: szociológusok, társadalomkutatók számára ugyanúgy alapvető az ökonometria ismerete. Sőt, maguk a módszerei még ennél is szélesebb körben, ahol empirikus adatok kezelésére szükség van, biostatisztikától a pszichometrián át az agrometriáig, felhasználhatóak. (Ahogy szokták is mondani: a <q>statisztika egy</q>.)</p>
+<p>Az ökonometriai a társadalmi-gazdasági jelenségek számszerűsített, empirikus – azaz tapasztalati, tényadatokon alapuló – vizsgálatának, modellezésének a tudománya. Szemben azzal, amit esetleg a név sugallhat, közel sem csak közgazdászoknak fontos: szociológusok, társadalomkutatók számára ugyanúgy alapvető az ökonometria ismerete. Sőt, maguk a módszerei még ennél is szélesebb körben, ahol empirikus adatok kezelésére szükség van, biostatisztikától a pszichometrián át az agrometriáig, felhasználhatóak. (Ahogy szokták is mondani: a ,,statisztika egy’’.)</p>
 <div class="handout">
 <p>
 Tárgyalás matematikai részletek nélkül, inkább sok területet érintve (de elméletileg precízen)
@@ -233,7 +265,7 @@ alt="ingyen webstatisztika"></a></div></noscript>
         </div>
       </div>
 
-<a href="út-az-ökonometriához.html" class="navigation navigation-next navigation-unique" aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="út-a-többváltozós-regresszióhoz.html" class="navigation navigation-next navigation-unique" aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

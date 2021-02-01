@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="hu" xml:lang="hu">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>3 . fejezet Kategoriális magyarázó változók | Ökonometria</title>
+  <meta name="description" content="Az ökonometria a társadalmi-gazdasági jelenségek kvantitatív, empirikus vizsgálatának, modellezésének tudománya. A jegyzet ezt tárgyalja, kerülve a mély matematikai részleteket, a hangsúlyt inkább a módszerek sokféleségének bemutatására helyezve. A számításokat mindenhol R statisztikai környezet alatt szemlélti." />
+  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="3 . fejezet Kategoriális magyarázó változók | Ökonometria" />
+  <meta property="og:type" content="book" />
+  <meta property="og:url" content="https://tamas-ferenci.github.io/FerenciTamas_Okonometria/" />
+  <meta property="og:image" content="https://tamas-ferenci.github.io/FerenciTamas_Okonometria/FerenciTamas_Okonometria_cover.png" />
+  <meta property="og:description" content="Az ökonometria a társadalmi-gazdasági jelenségek kvantitatív, empirikus vizsgálatának, modellezésének tudománya. A jegyzet ezt tárgyalja, kerülve a mély matematikai részleteket, a hangsúlyt inkább a módszerek sokféleségének bemutatására helyezve. A számításokat mindenhol R statisztikai környezet alatt szemlélti." />
+  <meta name="github-repo" content="tamas-ferenci/FerenciTamas_Okonometria" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="3 . fejezet Kategoriális magyarázó változók | Ökonometria" />
+  
+  <meta name="twitter:description" content="Az ökonometria a társadalmi-gazdasági jelenségek kvantitatív, empirikus vizsgálatának, modellezésének tudománya. A jegyzet ezt tárgyalja, kerülve a mély matematikai részleteket, a hangsúlyt inkább a módszerek sokféleségének bemutatására helyezve. A számításokat mindenhol R statisztikai környezet alatt szemlélti." />
+  <meta name="twitter:image" content="https://tamas-ferenci.github.io/FerenciTamas_Okonometria/FerenciTamas_Okonometria_cover.png" />
+
+<meta name="author" content="Ferenci Tamás, " />
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="regresszió-a-mintában-következtetés.html"/>
+
+<script src="libs/header-attrs-2.6/header-attrs.js"></script>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-19799395-2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-19799395-2');
+</script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Ferenci Tamás: Ökonometria</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Előszó</a></li>
+<li class="chapter" data-level="1" data-path="út-a-többváltozós-regresszióhoz.html"><a href="út-a-többváltozós-regresszióhoz.html"><i class="fa fa-check"></i><b>1</b> Út a többváltozós regresszióhoz</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="út-a-többváltozós-regresszióhoz.html"><a href="út-a-többváltozós-regresszióhoz.html#történetünk-első-szála-néhány-motiváló-példa"><i class="fa fa-check"></i><b>1.1</b> Történetünk első szála: néhány motiváló példa</a>
+<ul>
+<li class="chapter" data-level="1.1.1" data-path="út-a-többváltozós-regresszióhoz.html"><a href="út-a-többváltozós-regresszióhoz.html#hogyan-hat-az-osztálylétszám-a-tanulók-teljesítményére"><i class="fa fa-check"></i><b>1.1.1</b> Hogyan hat az osztálylétszám a tanulók teljesítményére?</a></li>
+<li class="chapter" data-level="1.1.2" data-path="út-a-többváltozós-regresszióhoz.html"><a href="út-a-többváltozós-regresszióhoz.html#csökkenti-e-a-korrupció-mértékét-a-nők-részvétele-a-politikában"><i class="fa fa-check"></i><b>1.1.2</b> Csökkenti-e a korrupció mértékét a nők részvétele a politikában?</a></li>
+<li class="chapter" data-level="1.1.3" data-path="út-a-többváltozós-regresszióhoz.html"><a href="út-a-többváltozós-regresszióhoz.html#csalnak-e-az-orosz-választásokon"><i class="fa fa-check"></i><b>1.1.3</b> Csalnak-e az orosz választásokon?</a></li>
+<li class="chapter" data-level="1.1.4" data-path="út-a-többváltozós-regresszióhoz.html"><a href="út-a-többváltozós-regresszióhoz.html#további-példák"><i class="fa fa-check"></i><b>1.1.4</b> További példák</a></li>
+</ul></li>
+<li class="chapter" data-level="1.2" data-path="út-a-többváltozós-regresszióhoz.html"><a href="út-a-többváltozós-regresszióhoz.html#a-példák-tanulságai-az-empirikus-adatok-elemzésének-legnagyobb-problémája"><i class="fa fa-check"></i><b>1.2</b> A példák tanulságai: az empirikus adatok elemzésének legnagyobb problémája</a></li>
+<li class="chapter" data-level="1.3" data-path="út-a-többváltozós-regresszióhoz.html"><a href="út-a-többváltozós-regresszióhoz.html#a-confounding-megoldásai-kísérlet-és-megfigyelés"><i class="fa fa-check"></i><b>1.3</b> A confounding megoldásai: kísérlet és megfigyelés</a></li>
+<li class="chapter" data-level="1.4" data-path="út-a-többváltozós-regresszióhoz.html"><a href="út-a-többváltozós-regresszióhoz.html#történetünk-második-szála-a-regressziós-modellek"><i class="fa fa-check"></i><b>1.4</b> Történetünk második szála: a regressziós modellek</a></li>
+<li class="chapter" data-level="1.5" data-path="út-a-többváltozós-regresszióhoz.html"><a href="út-a-többváltozós-regresszióhoz.html#regresszió-a-sokaságban"><i class="fa fa-check"></i><b>1.5</b> Regresszió a sokaságban</a></li>
+<li class="chapter" data-level="1.6" data-path="út-a-többváltozós-regresszióhoz.html"><a href="út-a-többváltozós-regresszióhoz.html#a-szálak-összeérnek"><i class="fa fa-check"></i><b>1.6</b> A szálak összeérnek</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="regresszió-a-mintában-következtetés.html"><a href="regresszió-a-mintában-következtetés.html"><i class="fa fa-check"></i><b>2</b> Regresszió a mintában: következtetés</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="regresszió-a-mintában-következtetés.html"><a href="regresszió-a-mintában-következtetés.html#a-hagyományos-legkisebb-négyzetek-ols-elve"><i class="fa fa-check"></i><b>2.1</b> A hagyományos legkisebb négyzetek (OLS) elve</a></li>
+<li class="chapter" data-level="2.2" data-path="regresszió-a-mintában-következtetés.html"><a href="regresszió-a-mintában-következtetés.html#lineáris-regresszió-becslése-ols-elven"><i class="fa fa-check"></i><b>2.2</b> Lineáris regresszió becslése OLS-elven</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="kategoriális-magyarázó-változók.html"><a href="kategoriális-magyarázó-változók.html"><i class="fa fa-check"></i><b>3</b> Kategoriális magyarázó változók</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="kategoriális-magyarázó-változók.html"><a href="kategoriális-magyarázó-változók.html#regresszió-csak-minőségi-változóval-anova"><i class="fa fa-check"></i><b>3.1</b> Regresszió csak minőségi változóval (ANOVA)</a>
+<ul>
+<li class="chapter" data-level="3.1.1" data-path="kategoriális-magyarázó-változók.html"><a href="kategoriális-magyarázó-változók.html#minőségi-változók-a-regresszióban"><i class="fa fa-check"></i><b>3.1.1</b> Minőségi változók a regresszióban</a></li>
+<li class="chapter" data-level="3.1.2" data-path="kategoriális-magyarázó-változók.html"><a href="kategoriális-magyarázó-változók.html#dummy-változó-fogalma"><i class="fa fa-check"></i><b>3.1.2</b> Dummy változó fogalma</a></li>
+<li class="chapter" data-level="3.1.3" data-path="kategoriális-magyarázó-változók.html"><a href="kategoriális-magyarázó-változók.html#kódolás"><i class="fa fa-check"></i><b>3.1.3</b> Kódolás</a></li>
+<li class="chapter" data-level="3.1.4" data-path="kategoriális-magyarázó-változók.html"><a href="kategoriális-magyarázó-változók.html#referencia-kódolás"><i class="fa fa-check"></i><b>3.1.4</b> Referencia-kódolás</a></li>
+<li class="chapter" data-level="3.1.5" data-path="kategoriális-magyarázó-változók.html"><a href="kategoriális-magyarázó-változók.html#dummy-változó-csapda"><i class="fa fa-check"></i><b>3.1.5</b> Dummy változó csapda</a></li>
+<li class="chapter" data-level="3.1.6" data-path="kategoriális-magyarázó-változók.html"><a href="kategoriális-magyarázó-változók.html#triviális-kódolás-konstans-nélkül"><i class="fa fa-check"></i><b>3.1.6</b> Triviális kódolás konstans nélkül</a></li>
+<li class="chapter" data-level="3.1.7" data-path="kategoriális-magyarázó-változók.html"><a href="kategoriális-magyarázó-változók.html#referencia-kódolás-konstanssal"><i class="fa fa-check"></i><b>3.1.7</b> Referencia-kódolás konstanssal</a></li>
+<li class="chapter" data-level="3.1.8" data-path="kategoriális-magyarázó-változók.html"><a href="kategoriális-magyarázó-változók.html#együtthatók-értelmezése-referencia-kódolásnál"><i class="fa fa-check"></i><b>3.1.8</b> Együtthatók értelmezése referencia-kódolásnál</a></li>
+<li class="chapter" data-level="3.1.9" data-path="kategoriális-magyarázó-változók.html"><a href="kategoriális-magyarázó-változók.html#fontos-hipotézisvizsgálatok"><i class="fa fa-check"></i><b>3.1.9</b> Fontos hipotézisvizsgálatok</a></li>
+<li class="chapter" data-level="3.1.10" data-path="kategoriális-magyarázó-változók.html"><a href="kategoriális-magyarázó-változók.html#egynél-több-kategoriális-magyarázó-változó"><i class="fa fa-check"></i><b>3.1.10</b> Egynél több kategoriális magyarázó változó</a></li>
+</ul></li>
+<li class="chapter" data-level="3.2" data-path="kategoriális-magyarázó-változók.html"><a href="kategoriális-magyarázó-változók.html#regresszió-minőségi-és-mennyiségi-magyarázó-változóval-ancova"><i class="fa fa-check"></i><b>3.2</b> Regresszió minőségi és mennyiségi magyarázó változóval (ANCOVA)</a>
+<ul>
+<li class="chapter" data-level="3.2.1" data-path="kategoriális-magyarázó-változók.html"><a href="kategoriális-magyarázó-változók.html#dummyzás-folytonos-magyarázó-változó-jelenléte-mellett"><i class="fa fa-check"></i><b>3.2.1</b> Dummyzás folytonos magyarázó változó jelenléte mellett}</a></li>
+<li class="chapter" data-level="3.2.2" data-path="kategoriális-magyarázó-változók.html"><a href="kategoriális-magyarázó-változók.html#eltérő-tengelymetszet"><i class="fa fa-check"></i><b>3.2.2</b> Eltérő tengelymetszet</a></li>
+<li class="chapter" data-level="3.2.3" data-path="kategoriális-magyarázó-változók.html"><a href="kategoriális-magyarázó-változók.html#eltérő-meredekség"><i class="fa fa-check"></i><b>3.2.3</b> Eltérő meredekség</a></li>
+<li class="chapter" data-level="3.2.4" data-path="kategoriális-magyarázó-változók.html"><a href="kategoriális-magyarázó-változók.html#eltérő-tengelymetszet-és-meredekség"><i class="fa fa-check"></i><b>3.2.4</b> Eltérő tengelymetszet és meredekség</a></li>
+<li class="chapter" data-level="3.2.5" data-path="kategoriális-magyarázó-változók.html"><a href="kategoriális-magyarázó-változók.html#eltérő-tengelymetszet-és-meredekség-1"><i class="fa fa-check"></i><b>3.2.5</b> Eltérő tengelymetszet és meredekség</a></li>
+<li class="chapter" data-level="3.2.6" data-path="kategoriális-magyarázó-változók.html"><a href="kategoriális-magyarázó-változók.html#hipotézisvizsgálat-a-dummyzott-modellben"><i class="fa fa-check"></i><b>3.2.6</b> Hipotézisvizsgálat a dummyzott modellben</a></li>
+<li class="chapter" data-level="3.2.7" data-path="kategoriális-magyarázó-változók.html"><a href="kategoriális-magyarázó-változók.html#kontraszt-kódolás"><i class="fa fa-check"></i><b>3.2.7</b> Kontraszt-kódolás</a></li>
+<li class="chapter" data-level="3.2.8" data-path="kategoriális-magyarázó-változók.html"><a href="kategoriális-magyarázó-változók.html#egy-terminológiai-megjegyzés"><i class="fa fa-check"></i><b>3.2.8</b> Egy terminológiai megjegyzés</a></li>
+</ul></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="http://www.medstat.hu/" target="blank">http://www.medstat.hu/</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Ökonometria</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="kategoriális-magyarázó-változók" class="section level1" number="3">
+<h1><span class="header-section-number">3 . fejezet</span> Kategoriális magyarázó változók</h1>
+<div id="regresszió-csak-minőségi-változóval-anova" class="section level2" number="3.1">
+<h2><span class="header-section-number">3.1</span> Regresszió csak minőségi változóval (ANOVA)</h2>
+<div id="minőségi-változók-a-regresszióban" class="section level3" number="3.1.1">
+<h3><span class="header-section-number">3.1.1</span> Minőségi változók a regresszióban</h3>
+<ul>
+<li>A kérdés, ami mostani kutatásainkat motiválja: hogyan szerepeltethetünk egy  (nominális vagy ordinális, szokás kategoriális változónak is nevezni) tulajdonságot, pl. férfi–nő, egészéges–beteg, alapfokú–középfokú–felsőfokú végzettségű stb. egy regressziós modellben</li>
+<li>A regresszió csak számszerű adatokat tud felhasználni <span class="math inline">\(\rightarrow\)</span> valahogy  kell a kategoriális tulajdonság lehetséges értékeit (kimeneteit, csoportjait)</li>
+<li>Eddig csak mennyiségi tulajdonságokkal foglalkoztunk, aminek kódolása triviális volt: a naturáliában kifejezett értékével (m<span class="math inline">\(^2\)</span>, eFt stb.)</li>
+<li>Pl. férfi = 0, nő = 1 elég kézenfekvő, de mi van az iskolai végzettséggel?</li>
+<li>Az alap = 0, közép = 1, felső = 2 belekódolja az adatokba, hogy a felső és a közép közti különbség  ugyanakkora lenni, mint a közép és alap közötti (ha felső = 3, akkor kétszer akkora stb.)</li>
+<li>De mi semmi ilyet nem akarunk, hiszen azt szeretnénk, hogy ezt az adatok mondják meg!</li>
+</ul>
+</div>
+<div id="dummy-változó-fogalma" class="section level3" number="3.1.2">
+<h3><span class="header-section-number">3.1.2</span> Dummy változó fogalma</h3>
+<ul>
+<li>A kódolást megvalósíthatjuk olyan változóval vagy változókkal, melyek  0 vagy 1 értéket vehetnek fel</li>
+<li>Az ilyen változókat nevezzük dummy (bináris vagy indikátor) változónak</li>
+<li>Ha két kimenet van, akkor a kódolás teljesen kézenfekvő: egy dummy változóra van szükségünk, mely (például) 0 értéket vesz fel férfira, 1-et nőre</li>
+<li>Bonyolultabb a helyzet, ha több kimenet van</li>
+<li>Triviális kódolás:</li>
+</ul>
+<table>
+<thead>
+<tr class="header">
+<th> </th>
+<th><span class="math inline">\(D_A\)</span></th>
+<th><span class="math inline">\(D_B\)</span></th>
+<th><span class="math inline">\(D_C\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>A</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td>B</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td>C</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="kódolás" class="section level3" number="3.1.3">
+<h3><span class="header-section-number">3.1.3</span> Kódolás</h3>
+<p>Ezen ,,kódolási tábla’’ alapján a kódolás (pl. <span class="math inline">\(X_1\)</span>: jövedelem, <span class="math inline">\(X_2\)</span>: iskolai végzettség, <span class="math inline">\(X_3\)</span>: életkor):</p>
+<p><span class="math display">\[
+\begin{array}{cc} 
+&amp; \begin{array}{cccc} \phantom{X_0}&amp;X_1 &amp; X_2 &amp; X_3 \\ \end{array} \\
+&amp;\left[
+\begin{array}{cccc}
+1 &amp; 213 &amp; B &amp; 32 \\
+1 &amp; 311 &amp; C &amp; 41 \\
+\vdots &amp; \vdots &amp; \vdots &amp; \vdots \\
+1 &amp; 128 &amp; B &amp; 18\\
+\end{array}
+\right]
+\end{array} \rightarrow
+\begin{array}{cc} 
+&amp; \begin{array}{cccccc} &amp;X_1 &amp; D_A &amp; D_B &amp; D_C &amp; \phantom{0}X_3 \\ \end{array} \\
+&amp;\left[
+\begin{array}{cccccc}
+1 &amp; 213 &amp; \phantom{0}0\phantom{0} &amp; \phantom{0}1\phantom{0} &amp; 0\phantom{0} &amp; 32\phantom{0} \\
+1 &amp; 311 &amp; 0 &amp; 0 &amp; 1\phantom{0} &amp; 41\phantom{0} \\
+\vdots &amp; \vdots &amp; \vdots &amp; \vdots &amp; \vdots\phantom{0}&amp; \vdots\phantom{0} \\
+1 &amp; 128 &amp; 0 &amp; 1 &amp; 0\phantom{0} &amp; 18\phantom{0}\\
+\end{array}
+\right]
+\end{array} 
+\]</span></p>
+<p>Itt már minden tisztán numerikus, működhet a regresszió</p>
+</div>
+<div id="referencia-kódolás" class="section level3" number="3.1.4">
+<h3><span class="header-section-number">3.1.4</span> Referencia-kódolás</h3>
+<ul>
+<li>ám vegyük észre, hogy 3 csoporthoz  kell 3 dummy változó, kódolható 2-vel is!</li>
+<li>Általában <span class="math inline">\(k\)</span> kimenet kódolása megoldható <span class="math inline">\(k-1\)</span> dummy változóval az ún. referencia-kódolás logikájával</li>
+<li>Itt kiválasztunk egy kimenetet, aminél mind a <span class="math inline">\(k-1\)</span> darab dummy változó 0 értéket vesz fel (kontrollcsoport vagy referenciacsoport), és a többi <span class="math inline">\(k-1\)</span> csoportot az jelzi, hogy a <span class="math inline">\(k-1\)</span> dummy változó közül  vesz fel 1 értéket (mindig csak 1!)</li>
+<li>Például (3 kimenetre):</li>
+</ul>
+<table>
+<thead>
+<tr class="header">
+<th> </th>
+<th><span class="math inline">\(R_A\)</span></th>
+<th><span class="math inline">\(R_B\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>A</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td>B</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<td>C</td>
+<td>0</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Itt C a referenciacsoport, <span class="math inline">\(R_A\)</span> és <span class="math inline">\(R_B\)</span> a két szükséges (ugye <span class="math inline">\(k=3\)</span>!) magyarázó változó</li>
+<li>Vegyük észre, hogy <span class="math inline">\(R_A \equiv D_A\)</span> és <span class="math inline">\(R_B \equiv D_B\)</span> (tehát a két kódoláshoz pontosan ugyanazon dummykra van szükség, csak a referencia-kódolásnál eldobjuk az egyiket – ez lesz a kontrollcsoport)</li>
+</ul>
+</div>
+<div id="dummy-változó-csapda" class="section level3" number="3.1.5">
+<h3><span class="header-section-number">3.1.5</span> Dummy változó csapda</h3>
+<ul>
+<li>Ha van konstans a modellben, akkor  is <span class="math inline">\(k\)</span> csoporthoz <span class="math inline">\(k\)</span> dummyt használni a kódoláshoz</li>
+<li>Ellenkező esetben egzakt multikollinearitás jön létre (gondoljuk végig, hogy a dummy változókhoz mi tartozik a design mátrixban, ld. előbb!); ez az ún. </li>
+<li>Ha <span class="math inline">\(k\)</span> csoportot mégis <span class="math inline">\(k\)</span> dummyval kódolunk (,,triviális kódolás’’), akkor viszont nem szerepeltethetünk konstanst</li>
+</ul>
+</div>
+<div id="triviális-kódolás-konstans-nélkül" class="section level3" number="3.1.6">
+<h3><span class="header-section-number">3.1.6</span> Triviális kódolás konstans nélkül</h3>
+<ul>
+<li>A két kódolási mód (<span class="math inline">\(k\)</span> darab dummy, nincs konstans és <span class="math inline">\(k-1\)</span> darab dummy, van konstans) jól szemléltethető egy csak a nominális tulajdonsággal magyarázó regresszióval</li>
+<li><span class="math inline">\(k\)</span> darab dummy, nincs konstans:</li>
+</ul>
+<table>
+<thead>
+<tr class="header">
+<th> </th>
+<th><span class="math inline">\(D_A\)</span></th>
+<th><span class="math inline">\(D_B\)</span></th>
+<th><span class="math inline">\(D_C\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>A</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td>B</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td>C</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+<p><span class="math display">\[
+    Y=\beta_A D_A + \beta_B D_B + \beta_C D_C + \varepsilon
+\]</span>
+- Együtthatók értelmezése: ha az <span class="math inline">\(A\)</span> csoportban vagyunk, akkor a fenti egyenlet <span class="math inline">\(Y=\beta_A+\varepsilon\)</span> lesz <span class="math inline">\(\Rightarrow\)</span> <span class="math inline">\(\beta_A\)</span> az <span class="math inline">\(A\)</span> csoport csoportátlaga (legkisebb négyzetes elv!); hasonlóan a többi</p>
+</div>
+<div id="referencia-kódolás-konstanssal" class="section level3" number="3.1.7">
+<h3><span class="header-section-number">3.1.7</span> Referencia-kódolás konstanssal</h3>
+<ul>
+<li><span class="math inline">\(k-1\)</span> darab dummy, van konstans:</li>
+</ul>
+<table>
+<thead>
+<tr class="header">
+<th> </th>
+<th><span class="math inline">\(D_A\)</span></th>
+<th><span class="math inline">\(D_B\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>A</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td>B</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<td>C</td>
+<td>0</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+<p><span class="math display">\[
+    Y=\beta^* + \beta_A^* D_A + \beta_B^* D_B + \varepsilon
+\]</span></p>
+</div>
+<div id="együtthatók-értelmezése-referencia-kódolásnál" class="section level3" number="3.1.8">
+<h3><span class="header-section-number">3.1.8</span> Együtthatók értelmezése referencia-kódolásnál</h3>
+<ul>
+<li>Értelmezésnél egy dolgot tartsunk mindig szem előtt: ugyanarra a csoportra ugyanannak az értéknek kell kijönnie, akárhogy kódolunk!</li>
+<li>Így <span class="math inline">\(\beta_C=\beta^*\)</span></li>
+<li>Továbbá (a <span class="math inline">\(B\)</span> csoport példáján):
+<span class="math display">\[
+      \beta_B=\beta^* + \beta_B^*=\beta_C + \beta_B^* \Rightarrow \beta_B^* = \beta_B-\beta_C
+  \]</span></li>
+<li>Tehát az együtthatók az  jelentik a referenciacsoporttól (ami pedig a konstansba kerül)</li>
+<li>Vegyük észre, hogy a változónkénti szignifikanciák eltérhetnek (mert másra fognak vonatkozni), de az előrejelzése – és így a modellminősítő mutatók – nem</li>
+</ul>
+</div>
+<div id="fontos-hipotézisvizsgálatok" class="section level3" number="3.1.9">
+<h3><span class="header-section-number">3.1.9</span> Fontos hipotézisvizsgálatok</h3>
+<ul>
+<li>Egyrészt: szignifikáns-e egy adott csoport átlagának eltérése a referenciacsoport átlagától</li>
+<li>Ez itt nem más, mint <span class="math inline">\(\beta^*_A\)</span> vagy <span class="math inline">\(\beta^*_B\)</span> relevanciája</li>
+<li>Egyszerűen <span class="math inline">\(t\)</span>-próbával ellenőrizhető!</li>
+<li>Másrészt: van-e egyáltalán bármilyen csoportok közötti eltérés:
+<span class="math display">\[\begin{align*}
+      H_0&amp;: \beta_A^*=\beta_B^*=\ldots=0\\
+      H_1&amp;: \exists j: \beta_j^*\neq 0
+  \end{align*}\]</span></li>
+<li>Több csoport átlaga eltér-e? De hát az az ANOVA!</li>
+<li>Az egyezés nem pusztán formai, teljes tartalmazi egyezés van (ez nem csak hasonló, hanem ugyanaz: az ANOVA elmondása regressziós ,,keretben’’)</li>
+</ul>
+</div>
+<div id="egynél-több-kategoriális-magyarázó-változó" class="section level3" number="3.1.10">
+<h3><span class="header-section-number">3.1.10</span> Egynél több kategoriális magyarázó változó</h3>
+<ul>
+<li>Ha egynél több kategoriális magyarázó változó van, akkor nem kódolható mindegyik triviálisan, ilyenkor már a konstans eltávolítása sem segít</li>
+<li>(Nem az lesz a baj, hogy valamelyik összege a konstans, hanem, hogy a kettő összege ugyanaz – ez elvileg is megoldhatatlan)</li>
+<li>Referencia-kódolás minden további nélkül használható</li>
+<li>A kétszempontos ANOVA megfelelője regressziós keretben!</li>
+<li>Természetesen feltételezhető interakció is, ez esetben a dummy-kat az összes lehetséges kombinációban szorozni kell</li>
+</ul>
+</div>
+</div>
+<div id="regresszió-minőségi-és-mennyiségi-magyarázó-változóval-ancova" class="section level2" number="3.2">
+<h2><span class="header-section-number">3.2</span> Regresszió minőségi és mennyiségi magyarázó változóval (ANCOVA)</h2>
+<div id="dummyzás-folytonos-magyarázó-változó-jelenléte-mellett" class="section level3" number="3.2.1">
+<h3><span class="header-section-number">3.2.1</span> Dummyzás folytonos magyarázó változó jelenléte mellett}</h3>
+<ul>
+<li>Amit eddig csináltunk az lényegében az volt, amit  nevezhetünk: csoportonként eltérő (de konstans) értékkel becsültük az eredményváltozót</li>
+<li>Mi van, ha bevonunk egy magyarázó változót?</li>
+<li>Azaz ekkor már nem egy konstanst becsülünk az egyes csoportokra, hanem egy egyenest (a folytonos magyarázó változó függvényében)</li>
+<li>Dummyzással (tehát a csoporttagság szerint) eltéríthetjük az egyenesek tengelymetszetét és meredekségét is!</li>
+<li>Lehet csoportonként különböző
+<ul>
+<li>+1 egység magyarázó változó hatása</li>
+<li>a 0 magyarázó változóhoz tartozó eredményváltozó</li>
+</ul></li>
+<li>E feladat neve: ANCOVA</li>
+</ul>
+</div>
+<div id="eltérő-tengelymetszet" class="section level3" number="3.2.2">
+<h3><span class="header-section-number">3.2.2</span> Eltérő tengelymetszet</h3>
+<p>Ha csak a tengelymetszetet térítjük el (+1 egység magyarázó változó hatása ugyanaz minden csoportban, de nem ugyanannyi a 0 magyarázó változóhoz tartozó eredményváltozó):</p>
+<p><img src="FerenciTamas_Okonometria_files/figure-html/unnamed-chunk-22-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Algebrailag:
+<span class="math display">\[
+    %Y=\beta^* + \beta_A^* D_A + \beta_B^* D_B + \beta_X X + u 
+    Y=\beta_0 + \beta_D D + \beta_X X + \varepsilon
+\]</span></p>
+</div>
+<div id="eltérő-meredekség" class="section level3" number="3.2.3">
+<h3><span class="header-section-number">3.2.3</span> Eltérő meredekség</h3>
+<p>Ha csak a meredekséget térítjük el (0 magyarázó változóhoz ugyanaz az eredményváltozó tartozik, de +1 egység magyarázó változó hatása csoportonként eltérő):</p>
+<p><img src="FerenciTamas_Okonometria_files/figure-html/unnamed-chunk-23-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Algebrailag:
+<span class="math display">\[
+        %Y=\beta_1 + \left(\beta_X + \beta_{X,A}^* D_A + \beta_{X,B}^* D_B\right) X + u
+        Y=\beta_0 + \left(\beta_X + \beta_D D\right) X + \varepsilon
+    \]</span></p>
+</div>
+<div id="eltérő-tengelymetszet-és-meredekség" class="section level3" number="3.2.4">
+<h3><span class="header-section-number">3.2.4</span> Eltérő tengelymetszet és meredekség</h3>
+<ul>
+<li>Akár a tengelymetszet  a meredekség is lehet különböző</li>
+<li>Ahogy előbb láttuk, csak a módszereket kell kombinálni: a konstanst és a meredekséget is megdummyzzuk:
+<span class="math display">\[
+      Y=\beta_1 + \beta_2 X + \varepsilon,
+  \]</span>
+de úgy, hogy <span class="math inline">\(\beta_1=\alpha + \alpha_A D_A + \alpha_B D_B\)</span> és <span class="math inline">\(\beta_2=\gamma+ \gamma_A D_A + \gamma_B D_B\)</span></li>
+<li>Nagyon fontos észrevenni, hogy a meredekség dummyzása a dummy és a mennyiségi változó közti interakcióra vezet:
+<span class="math display">\[
+      Y=\alpha + \alpha_A D_A + \alpha_B D_B+ \gamma X + \gamma_A \left(D_A X\right) + \gamma_B \left(D_B X \right) + \varepsilon
+  \]</span></li>
+<li>Logikus is: az egyik változó (folytonos) hatása eltér a szerint, hogy a másik változónak (kategoriális) mi a szintje: különböző meredekségek</li>
+<li>Avagy fordítva elmondva (egyenértékűen, hiszen az interakció ugye szimmetrikus): az egyik változó (kategoriális) hatása eltér a szerint, hogy a másik változónak (folytonos) mi a szintje: az egyenesek közti különbség függ attól, hogy hol nézzük</li>
+</ul>
+</div>
+<div id="eltérő-tengelymetszet-és-meredekség-1" class="section level3" number="3.2.5">
+<h3><span class="header-section-number">3.2.5</span> Eltérő tengelymetszet és meredekség</h3>
+<ul>
+<li>De hát ez megoldható a minta szétszedésével is!</li>
+<li>A két módszer – természetesen – ugyanarra az eredményre vezet</li>
+<li>A dummyzás mégis jobb a minta szétszedésénél; vajon miért? Mert messzemenően több lehetőségünk van a dummyzott (egybenlévő) modellel <span class="math inline">\(\rightarrow\)</span> gazdaságilag releváns hipotézisek vizsgálhatóak egyszerűen (ld. mindjárt)</li>
+</ul>
+</div>
+<div id="hipotézisvizsgálat-a-dummyzott-modellben" class="section level3" number="3.2.6">
+<h3><span class="header-section-number">3.2.6</span> Hipotézisvizsgálat a dummyzott modellben</h3>
+<ul>
+<li>Pl.: van-e egyáltalán bármilyen eltérés a csoportok között? (Értsd: eltér-e a becsült egyenes (bármilyen szempontból) a csoportok között, vagy mindegyikben teljesen ugyanaz?)</li>
+<li>Ez az ún. , hipotézispárja: <span class="math inline">\(H_0: \alpha_A = \alpha_B =\gamma_A = \gamma_B =0\)</span>, <span class="math inline">\(H_1\)</span>: valamelyik ezek közül nem nulla, tehát van strukturális törés</li>
+<li>És most jön a szép rész: ha a fenti modellt megbecsültük (sima OLS-sel), akkor ez a hipotézis egyszerűen egy közönséges Wald- (vagy hasonló) próbát jelent!</li>
+<li>Hasonlóképp: nem lehet, hogy csak a tengelymetszetek eltérőek? <span class="math inline">\(\rightarrow\)</span> ez az ún.  hipotézise, <span class="math inline">\(H_0:\gamma_A = \gamma_B =0\)</span>; szintén Wald-teszttel elintézhető</li>
+<li>Minden hasonló, gazdasági kérdés  ökonometriailag, például változó vagy változók relevanciájának tesztelésére</li>
+</ul>
+</div>
+<div id="kontraszt-kódolás" class="section level3" number="3.2.7">
+<h3><span class="header-section-number">3.2.7</span> Kontraszt-kódolás</h3>
+<ul>
+<li>Kontraszt-kódolás: trükkös kódolás úgy kitalálva, hogy a dummy-k együtthatója ne a referencia-csoporthoz, hanem az átlaghoz képesti eltérést jelentse</li>
+<li>A megoldás:</li>
+</ul>
+<table>
+<thead>
+<tr class="header">
+<th> </th>
+<th><span class="math inline">\(C_A\)</span></th>
+<th><span class="math inline">\(C_B\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>A</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td>B</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<td>C</td>
+<td>-1</td>
+<td>-1</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>(A dummy változó nem 0 és 1 értéket vehet csak fel)</li>
+<li>Miért fog ez működni?</li>
+</ul>
+<p>Mert:
+<span class="math display">\[\begin{align}
+\beta_0 + \beta_{C_{A}} + 0 = \overline{y}_{A} \\
+\beta_0 + 0 + \beta_{C_{B}} = \overline{y}_{B} \\
+\beta_0 - \beta_{C_{A}} - \beta_{C_{B}} = \overline{y}_{C}
+\end{align}\]</span>
+És így:</p>
+<ul>
+<li>(1)+(2)+(3) <span class="math inline">\(\Rightarrow\)</span> <span class="math inline">\(3\beta_0=\overline{y}_{A}+\overline{y}_{B}+\overline{y}_{C}\)</span> <span class="math inline">\(\Rightarrow\)</span> <span class="math inline">\(\beta_0\)</span> tényleg a főátlag (ha azonosak a csoportok elemszámai! különben ún. súlyozott kontraszt kellene, ahol a dummy változók már nem is feltétlenül egész értékeket vennének fel)</li>
+<li>(2)+(3) <span class="math inline">\(\Rightarrow\)</span> <span class="math inline">\(2\beta_0-\beta_{C_{A}}=\overline{y}_{B}+\overline{y}_{C} \Rightarrow \beta_{C_{A}}=2\beta_0-\left(\overline{y}_{B}+\overline{y}_{C}\right)=2\beta_0-\left(3\beta_0-\overline{y}_{A}\right) \Rightarrow \beta_{C_{A}}=\overline{y}_{A}-\beta_0\)</span> <span class="math inline">\(\Rightarrow\)</span> tényleg az átlagtól való eltérés (és hasonlóan a másik)</li>
+</ul>
+</div>
+<div id="egy-terminológiai-megjegyzés" class="section level3" number="3.2.8">
+<h3><span class="header-section-number">3.2.8</span> Egy terminológiai megjegyzés</h3>
+<ul>
+<li>Az angol irodalomban az általunk kontrasztkódolásnak nevezett módszert nagyon gyakran ,,effect coding’’-nak nevezik</li>
+<li>a kontraszt pedig az, amikor a csoportok tetszőleges – általunk meghatározott – lineáris kombinációját teszteljük</li>
+</ul>
+
+</div>
+</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- Default Statcounter code for Physcon Research
+http://research.physcon.uni-obuda.hu/ -->
+<script type="text/javascript">
+var sc_project=11601191; 
+var sc_invisible=1; 
+var sc_security="5a06c22d"; 
+</script>
+<script type="text/javascript"
+src="https://www.statcounter.com/counter/counter.js"
+async></script>
+<noscript><div class="statcounter"><a title="ingyen
+webstatisztika" href="https://www.statcounter.hu/"
+target="_blank"><img class="statcounter"
+src="https://c.statcounter.com/11601191/0/5a06c22d/1/"
+alt="ingyen webstatisztika"></a></div></noscript>
+<!-- End of Statcounter Code -->
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="regresszió-a-mintában-következtetés.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/tamas-ferenci/FerenciTamas_Okonometria/edit/master/03-kategorialismagyarazovaltozok.Rmd",
+"text": "Szerkesztés"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["FerenciTamas_Okonometria.pdf", "FerenciTamas_Okonometria.epub"],
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

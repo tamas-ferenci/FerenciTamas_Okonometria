@@ -1,4 +1,4 @@
-# Út az ökonometriához
+# Út a többváltozós regresszióhoz
 
 `r if (!knitr:::is_latex_output()) '
 $\\DeclareMathOperator*{\\argmin}{arg\\,min}$
@@ -33,15 +33,15 @@ Mi azonban a továbbiakban egy módszerrel fogunk foglalkozni: ha empirikusan ig
 data("CASchools", package = "AER")
 CASchools$tsratio <- with(CASchools, teachers/students)
 CASchools$score <- with(CASchools, (math + read)/2)
-lattice::xyplot( score ~ tsratio, data = CASchools,
-                 xlab = "Tanár:diák arány", ylab = "Teszteredmény" )
+ggplot(CASchools, aes(x = tsratio, y = score)) + geom_point() +
+  labs(x = "Tanár:diák arány", y = "Teszteredmény")
 ```
 
 Az eredmények első ránézésre megerősítik a sejtésünket: ha több tanár jut egy diákra (kisebbek az osztályok), akkor az jobb teszteredménnyel jár együtt. Nem túl erős az összefüggés, de azért egyértelműen létezik (vájtfülőek kedvéért: $r=`r cor(CASchools$score,CASchools$tsratio)`$, $p `r Hmisc::format.pval(cor.test(CASchools$score,CASchools$tsratio)$p.val,eps=0.001)`$) és némi munkával még az is kihozható, hogy ezen eredmények szerint ha egy századdal megnöveljük a tanár:diák arányt, akkor várhatóan `r coef(lm(score ~ tsratio,data=CASchools))["tsratio"]/100` ponttal fog javulni a tesztpontszám.
 
 Ezek az eredmények húsbavágóak. Ha lecsökkentjük az osztálylétszámokat, akkor több tanárt kell alkalmazni, több osztályt kell indítani, adott esetben több osztályteremre lesz szükség, de még az sem kizárt, hogy új iskolaépületre. Pontosan tudni kell tehát, hogy tényleg elérünk-e ezzel valamit. Sőt, valójában ennél többről van szó, azt is tudni kell, hogy *mennyit* érünk el ezzel, egész egyszerűen azért, hogy költség-haszon mérleget lehessen csinálni: a tanárok bérét meg az iskolafelújítások árát megmondják a kontrollerek, de mit rakunk a mérleg másik serpenyőjébe? Ehhez kell tudni a fenti számot, hogy a kettőből együtt meg tudjuk mondani: hány millió dollárt kell költenünk 1 pont teljesítményjavításra. Hogy aztán ez megéri-e, az természetesen már nem statisztikai kérdés, függ a rendelkezésre álló büdzsétől, az egyéb feladatoktól, de még a kormány értékválasztásától is, ám a statisztikának kell ezt, mint inputadatot szolgáltatni a döntéshez.
 
-De vajon biztos jól van így minden? Ha az ember elkezdi jobban nézni a problémát, esetleg "szociológiai" szemmel is igyekszik ránézni, akkor hamar szöget üthet a fejében valami. És nem is kell Kaliforniáig menni, magyar, vagy akár még konkrétabban budapesti viszonylatban is ugyanúgy érzékelhető a probléma: ha veszünk kis átlaglétszámú osztályokat (sztereotipikusan mondjuk 2. kerület) és nagy átlaglétszámú osztályokat (sztereotipikusan mondjuk 8. kerület), akkor hihető, hogy az előbbiek teljesítménye jobb, na de álljunk meg egy pillanatra! Csak és kizárólag az osztálylétszám nagyságában térnek el ezek az osztályok egymástól?! Dehogy! Akkor meg honnan tudjuk, hogy a tapasztalt különbség tényleg az osztálylétszámbeli eltérés miatt van...?
+De vajon biztos jól van így minden? Ha az ember elkezdi jobban nézni a problémát, esetleg ,,szociológiai'' szemmel is igyekszik ránézni, akkor hamar szöget üthet a fejében valami. És nem is kell Kaliforniáig menni, magyar, vagy akár még konkrétabban budapesti viszonylatban is ugyanúgy érzékelhető a probléma: ha veszünk kis átlaglétszámú osztályokat (sztereotipikusan mondjuk 2. kerület) és nagy átlaglétszámú osztályokat (sztereotipikusan mondjuk 8. kerület), akkor hihető, hogy az előbbiek teljesítménye jobb, na de álljunk meg egy pillanatra! Csak és kizárólag az osztálylétszám nagyságában térnek el ezek az osztályok egymástól?! Dehogy! Akkor meg honnan tudjuk, hogy a tapasztalt különbség tényleg az osztálylétszámbeli eltérés miatt van...?
 
 A rövid válasz -- sajnos -- az, hogy sehonnan! És itt van a bökkenő: igaz, hogy a 2. kerületi osztályok kisebbek mint a 8. kerületiek, de *egyúttal* másban is eltérnek, az oda járó gyerekek szocioökonómiai háttere tendenciájában jobb, tanulásra motiválóbb otthoni környezetből érkeztek, a szülők anyagilag is megengedhetik maguknak, hogy a gyermekeiket különórára járassák stb. E ponton viszont nagy baj van: innen kezdve fogalmunk sem lehet, hogy a tapasztalt különbség *tényleg* a kisebb osztálylétszám miatt van, vagy esetleg az osztálylétszámnak a világon semmi hatása nincs, csak egyszerűen a kisebb osztályokba jobb szocioökonómiai helyzetű diákok járnak és *ez* a valódi oka az ott tapasztalt jobb tesztpontszámnak?
 
@@ -50,27 +50,30 @@ Sőt! Innentől kezdve még akár az is elképzelhető, hogy a kisebb osztályl�
 Valaki nem hiszi el, hogy ez még is lehetséges? Nos, gyártsunk egy egyszerű szimulációt! Egyelőre nem árulom el, hogy hogyan készítettem, de íme a végeredménye:
 
 ```{r, echo=FALSE}
-CommonSigma <- matrix( c(0.00001, -sqrt(0.00001)*sqrt(100)*0.5, -sqrt(0.00001)*sqrt(100)*0.5, 100 ), nc=2 )
+CommonSigma <- matrix(c(0.00001, -sqrt(0.00001)*sqrt(100)*0.5, -sqrt(0.00001)*sqrt(100)*0.5, 100), nc = 2)
 SimData <- rbind(
-  data.frame( SES = "Rossz SES", MASS::mvrnorm( n = nrow(CASchools)/2, c( 0.05, 640 ), CommonSigma ) ),
-  data.frame( SES = "Jó SES", MASS::mvrnorm( n = nrow(CASchools)/2, c( 0.053, 665 ), CommonSigma ) )
+  data.frame(SES = "Rossz SES", MASS::mvrnorm(n = nrow(CASchools)/2, c(0.05, 640), CommonSigma)),
+  data.frame(SES = "Jó SES", MASS::mvrnorm(n = nrow(CASchools)/2, c(0.053, 665), CommonSigma))
 )
-names( SimData )[2:3] <- c( "tsratio", "score" )
-lattice::xyplot( score ~ tsratio, data = SimData, xlab = "Tanár:diák arány", ylab = "Teszteredmény")
+names(SimData)[2:3] <- c("tsratio", "score")
+ggplot(SimData, aes(x = tsratio, y = score)) + geom_point() +
+  labs(x = "Tanár:diák arány", y = "Teszteredmény")
 ```
 
-Első ránézésre nagyjából megfelel a korábbi képnek. De nézzük csak meg jobban mi történik itt! (Mivel ezt saját kezűleg generáltuk, így megtehetjük, hiszen tudjuk mi van a valóságban, az adatok hátterében). Az egyszerűség kedvéért mondjuk, hogy a szocioökonómiai státusz egy bináris változó, "jó" és "rossz" a két lehetséges értéke.
+Első ránézésre nagyjából megfelel a korábbi képnek. De nézzük csak meg jobban mi történik itt! (Mivel ezt saját kezűleg generáltuk, így megtehetjük, hiszen tudjuk mi van a valóságban, az adatok hátterében). Az egyszerűség kedvéért mondjuk, hogy a szocioökonómiai státusz egy bináris változó, ,,jó'' és ,,rossz'' a két lehetséges értéke.
 
 Nézzük a tanár:diák arány és a pontszám összefüggését a jó szocioökonómiai státuszú osztályok körében:
 
 ```{r, echo=FALSE}
-lattice::xyplot( score ~ tsratio, data = SimData, subset = SES=="Jó SES", xlab = "Tanár:diák arány", ylab = "Teszteredmény")
+ggplot(SimData[SimData$SES=="Jó SES",], aes(x = tsratio, y = score)) + geom_point() +
+  labs(x = "Tanár:diák arány", y = "Teszteredmény")
 ```
 
 Érdekes! Itt fordított a kapcsolat. Na de mi a helyzet a rossz szocioökonómiai státuszú osztályokban? Íme:
 
 ```{r, echo=FALSE}
-lattice::xyplot( score ~ tsratio, data = SimData, subset = SES=="Rossz SES", xlab = "Tanár:diák arány", ylab = "Teszteredmény")
+ggplot(SimData[SimData$SES=="Rossz SES",], aes(x = tsratio, y = score)) + geom_point() +
+  labs(x = "Tanár:diák arány", y = "Teszteredmény")
 ```
 
 Itt is negatív a kapcsolat!
@@ -78,7 +81,8 @@ Itt is negatív a kapcsolat!
 Ez meg hogy a viharban lehet? -- kérdezhetné valaki. A rossz szociális helyzetű csoporton belül is ront a kisebb osztálylétszám, a jó helyzetűeken belül is ront, de összességében meg javít?! Egyből világosabb a helyzet, ha egy ábrán ábrázoljuk a kettőt, csak eltérő színekkel:
 
 ```{r, echo=FALSE}
-lattice::xyplot( score ~ tsratio, groups = SES, data = SimData, auto.key = list( columns=2 ), xlab = "Tanár:diák arány", ylab = "Teszteredmény" )
+ggplot(SimData, aes(x = tsratio, y = score, color = SES)) + geom_point() +
+  labs(x = "Tanár:diák arány", y = "Teszteredmény")
 ```
 
 Azonnal érthető, hogy mi történik, ha hozzávesszük a korábban mondottakat: a jobb tanár:diák arány igazából *ront* a helyzeten, de a jobb szociális helyzetű diákok által alkotott osztályok egyszerre kisebbek *és* -- szociális helyzetük, nem az osztálylétszám miatt! -- jobb teljesítményűek, és ez olyan erős effektus, hogy ha egyben vizsgáljuk az osztályokat, akkor a kisebb létszám rontó hatását átbillenti, hogy a kisebb osztályok a jobb szociális helyzetük miatt jobb teljesítményűek. Így összeségében azt fogjuk látni, ahonnan indultunk: hogy a kisebb létszámú osztályok jobb teljesítményűek.
@@ -100,7 +104,7 @@ Hosszasan sorolhatóak a további, hasonló példák a társadalmi-gazdasági el
 - Hogyan hat a munkanélküliség a GDP-re?
 - Hogyan hat az államadósság a növekedésre?
 - Return on education: mekkora az oktatás haszna, tehát, ha egy évvel többet tölt valaki az iskolapadban, az mennyivel növeli a fizetését?
-- Létezik-e "cigánybűnözés"?
+- Létezik-e ,,cigánybűnözés''?
 - Az ökonometria-előadás haszna: ha többet tölt a hallgató az öko előadáson, jobb jegyet kap-e emiatt, és ha igen, mennyivel?
 - Milyen tényezők hatnak arra, hogy egy országban hány terrortámadás történik?
 - Hogyan hat a rendőri erők létszáma egy adott városban az ottani bűnözési rátákra?
@@ -124,7 +128,7 @@ Azért, hogy eldöntsük, hogy van-e okozati hatás (illetve, hogy lemérjük me
 
 Vegyük észre, hogy a confounding fellépéséhez az kellett, hogy létezzen olyan tényező, amire két dolog *egyszerre* igaz: együttmozog a vizsgált tényezővel (összefügg vele) *és* önmagában -- azaz a vizsgált tényező minden értéke mellett -- hat az eredményváltozóra. Akkor van confounding, ha ez a kettő egyidejűleg fennáll. Ha bármelyik nincs jelen, akkor nincs probléma. Ha a szociális helyzet összefügg ugyan az osztálylétszámmal, de nem hat a teljesítményre, akkor nincs baj: igaz, hogy a kisebb osztályok jobb szociális helyzetűek, de ez nem befolyásolja a teljesítményt. Hasonlóképp, ha a szociális helyzet befolyásolja ugyan a teljesítményt, de nem függ ösze az osztálymérettel, akkor sincs gond: a kisebb osztályoknak nem tér el a szociális helyzete a nagyobbaktól. (Gondoljuk végig az összes többi példára is!) Azokat a változókat, amelyek ezt a két dolgot egyidejűleg tudják, tehát a vizsgált tényezővel együttmozognak *és* az eredményváltozóra is hatnak, ilyen módon okozzák a confoundingot, szokás zavaró változónak, vagy **confoundernek** nevezni.
 
-A későbbiek szempontjából hasznos lesz ezt még másképp átfogalmazni. A probléma, hogy nem az érdekel minket, hogy egy osztály abban tér el, hogy kisebb a létszám, akkor ott jobb-e a teljesítmény, hanem az, hogy ha *csak* abban tér el, hogy kisebb a létszám, akkor ott jobb-e a teljesítmény. Ezt szokás **ceteris paribus elvnek** ("minden mást változatlanul tartva") nevezni, ez a kulcs a kauzalitáshoz: az érdekel minket, hogy ha minden mást változatlanul tartva *csak* az osztálylétszám változik, akkor mi történik. A naiv elemzésben az osztálylétszám változásával együtt egyéb tényezők is változhatnak, így ebből nem tudunk a kauzalitásra következtetni. Figyeljünk a szóhasználatra: azt mondhatjuk, hogy a kisebb osztálylétszám jobb teljesítménnyel *jár együtt* (korreláció), de azt nem, hogy a kisebb osztálylétszám jobb teljesítményt *okoz* (kauzalitás).
+A későbbiek szempontjából hasznos lesz ezt még másképp átfogalmazni. A probléma, hogy nem az érdekel minket, hogy egy osztály abban tér el, hogy kisebb a létszám, akkor ott jobb-e a teljesítmény, hanem az, hogy ha *csak* abban tér el, hogy kisebb a létszám, akkor ott jobb-e a teljesítmény. Ezt szokás **ceteris paribus elvnek** (,,minden mást változatlanul tartva'') nevezni, ez a kulcs a kauzalitáshoz: az érdekel minket, hogy ha minden mást változatlanul tartva *csak* az osztálylétszám változik, akkor mi történik. A naiv elemzésben az osztálylétszám változásával együtt egyéb tényezők is változhatnak, így ebből nem tudunk a kauzalitásra következtetni. Figyeljünk a szóhasználatra: azt mondhatjuk, hogy a kisebb osztálylétszám jobb teljesítménnyel *jár együtt* (korreláció), de azt nem, hogy a kisebb osztálylétszám jobb teljesítményt *okoz* (kauzalitás).
 
 Valaki esetleg azt mondhatja, hogy rendben, itt tényleg van valami módszertani gubanc, meg szép latin szavak^[Pedig még össze sem foglaltam a fentieket úgy, hogy a korreláció nem implikál kauzalitást!] de igazából ez csak az ilyen módszertani kérdéseken szöszmötölő kutatóknak érdekes, a lényeg, hogy ha kisebb az osztálylétszám, akkor ott jobb a teljesítmény, ennyi a fontos, és pont. Nem! Ez az érvelés teljesen fals, az hogy mi hat mire, nem tudományos szőrszálhasogatás, hanem elsőrendű gyakorlati kérdés. Miért? A beavatkozás miatt! A *valódi* okozatiság felismerése ott válik kritikussá, ha beavatkozunk a rendszerbe, ha ugyanis rosszul állapítjuk meg az okozati kapcsolatok irányát, akkor ez teljesen félremehet. Például lecsökkentjük az osztálylétszámokat, adott esetben rengeteg pénzt elköltve, de ha a *valódi* oka a jobb teljesítménynek nem az osztálylétszám, hanem a jobb szociális helyzet, akkor ezzel semmit nem érünk el! Sőt, mint a későbbi példa mutatja, adott esetben még kimondottan árthatunk is!
 
@@ -142,7 +146,7 @@ A randomizálásnak egy baja van: akkor alkalmazható, ha a vizsgált tényezőt
 
 Azokat a vizsgálatokat, ahol a kutatást végzők nem tudják befolyásolni a vizsgált tényezőt, az alakul a maga rendje szerint, és a kutatók csak passzíve feljegyzik a történéseket külső szemlélőként, **megfigyeléses (obszervációs) vizsgálatnak** nevezzük. A társadalmi-gazdasági elemzések során tehát szinte mindig ilyenekkel lesz dolgunk. Márpedig ezeknél mindig fejünk felett fog lebegni a confounding problémája.
 
-## Történetünk második szála: az ökonometriai modellek és a regresszió
+## Történetünk második szála: a regressziós modellek
 
 Folytassuk most valami -- látszólag -- teljesen más témával.
 
@@ -158,7 +162,7 @@ A későbbiekben erre azt fogjuk mondani, hogy ez egy statisztikai modell. Ennek
 
 A fő probléma, hogy a modell azt feltételezi, hogy az $Y$ és az $X$-ek kapcsolata **determinisztikus**. Szinte teljesen mindegy is, hogy mi az $Y$ és mik az $X$-ek, hogy mi a vizsgált probléma, a társadalmi-gazdasági jelenségek vizsgálata kapcsán lényegében általánosan kijelenthető, hogy ez irreális: bármilyen ügyesek vagyunk, soha az életben nem fogunk tudni determinisztikus modelleket alkotni társadalmi-gazdasági jelenségekre. (Aligha lehet olyan modellt alkotni, ami *pontosan*, hiba nélkül megmondja előre, hogy egy osztály milyen pontszámot fog elérni, vagy, hogy egy választáson pontosan hány szavazat érkezik egy pártra.) Ez legfeljebb középiskolás fizikában működik, a társadalmi-gazdasági jelenségekben szinte kizárt, hogy *függvényszerű* módon meghatározzák a magyarázó változók az eredményváltozót. Hiszen lesznek változók amiket nem ismerünk, rosszul mérünk, rosszul veszünk figyelembe, az, hogy egy gyerek hány pontot ír egy teszten, mindig függ a mi közelítési szintünk ténylegesen véletlen dolgoktól stb. A A valódi modell tehát **sztochasztikus** kell legyen:
 \[
-  Y=f\left(X_1,X_2,\ldots,X_k\right)+\varepsilon
+Y=f\left(X_1,X_2,\ldots,X_k\right)+\varepsilon
 \]
 Itt $\varepsilon$ jelzi a fentiekből fakadó bizonytalanságot, a neve: **hibatag**.
 
@@ -166,7 +170,7 @@ Rövid jelölésként az $X$-eket gyakran egy vektorba vonjuk össze: $Y=f\left(
 
 Az így kapott modellünk már egy teljes értékű statisztikai (ökonometriai) modell! Az ilyen $f$-et hívjuk (sokasági) **regressziófüggvénynek**.
 
-Már most is fontos, hogy lássuk, hogy az $f$-nek van egy nagyon is földhözragadt értelmezése: ezt kell használni, ha szeretném "megtippelni" $Y$ értékét $X$-ek ismeretében. Hogy ez miért lesz fontos, azt majd később fogjuk látni, de a feladat így is értelmes: ha ismerem egy osztály tanár:diák arányát és a szociális helyzetet, akkor ezek alapján mit mondhatok a teszteredményéről. Ha ezek tényleg hatnak rá, akkor valamit mondhatok, ezt fejezi ki az $f$-es rész, $\varepsilon$ pedig azt, amit nem tudok ezek alapján megmondani, azaz ettől lesz ez csak tipp: mindenképp kell számolnom azzal, hogy a valóság ettől a fent említett okok miatt eltér.
+Már most is fontos, hogy lássuk, hogy az $f$-nek van egy nagyon is földhözragadt értelmezése: ezt kell használni, ha szeretném ,,megtippelni'' $Y$ értékét $X$-ek ismeretében. Hogy ez miért lesz fontos, azt majd később fogjuk látni, de a feladat így is értelmes: ha ismerem egy osztály tanár:diák arányát és a szociális helyzetet, akkor ezek alapján mit mondhatok a teszteredményéről. Ha ezek tényleg hatnak rá, akkor valamit mondhatok, ezt fejezi ki az $f$-es rész, $\varepsilon$ pedig azt, amit nem tudok ezek alapján megmondani, azaz ettől lesz ez csak tipp: mindenképp kell számolnom azzal, hogy a valóság ettől a fent említett okok miatt eltér.
 
 Ez az egyenlet egy **sokasági modell**: azt írja le, hogy a valóság hogyan működik. Pontosan ugyanaz a helyzet, mint bármilyen következtető statisztikai kurzus alapjainál: van a sokaság, amit eloszlásokkal, valószínűségszámítási eszközökkel írunk le, de a tényleges vizsgálatokban mi sem ismerjük. (Tehát nem tudjuk, hogy ezek az eloszlások milyenek.) Ahhoz, hogy megismerjük veszünk egy mintát, ennek a kezeléséhez már statisztika kell, aminek a feladat épp az lesz, hogy következtessünk a sokaságra.
 
@@ -183,11 +187,11 @@ Ezt úgy kell elképzelnünk, mint egy $k+1$ dimenziós teret: minden pont egy a
 $k+1$ dimenziós terekben a legtöbb ember relatíve rosszul tájékozódik, úgyhogy ábrázoljunk egy olyan együttes eloszlást, amikor még átlátható a dolog!
 
 ```{r, echo=FALSE}
-JointDensity <- expand.grid( scoregrid = seq( 600, 715, 1 ), tsratiogrid = seq( 0.04, 0.07, 0.0001 ) )
-JointDensity$f <- Rfast::dmvnorm( as.matrix(JointDensity),
-                                  colMeans(CASchools[,c("score","tsratio")]), cov(CASchools[,c("score","tsratio")]) )
-lattice::wireframe( f ~ tsratiogrid + scoregrid, data = JointDensity, theta = -30, xlab = "Tanár:diák arány",
-                    ylab = "Teszteredmény", zlab = "Sűrűség")
+JointDensity <- expand.grid(scoregrid = seq(600, 715, 1), tsratiogrid = seq(0.04, 0.07, 0.0001))
+JointDensity$f <- Rfast::dmvnorm(as.matrix(JointDensity),
+                                 colMeans(CASchools[,c("score","tsratio")]), cov(CASchools[,c("score","tsratio")]))
+lattice::wireframe(f ~ tsratiogrid + scoregrid, data = JointDensity, theta = -30, xlab = "Tanár:diák arány",
+                   ylab = "Teszteredmény", zlab = "Sűrűség")
 ```
 
 Ez egy kétváltozós eloszlás együttes sűrűségfüggvénye; itt az egyik változó játsza a magyarázó-, a másik az eredményváltozó szerepét. A mintavétel ebből az eloszlásból azt jelenti, hogy kiveszünk egy iskolát (tehát tanár:diák arányt *és* teszteredményt egyszerre!); ahol magasan fut a sűrűségfüggvény, arról a környékről gyakran veszünk ki, ahol alacsonyan, ott ritkábban. A hiba mibenléte is jól érthető erről az ábráról: ha kiválasztunk egy adott konkrét $X_1$-et, ahhoz csak egyetlen $f\left(X_1\right)$-et adhatunk, mégis $Y$ minden értéket felvehet, tehát lehetetlen, hogy ne hibázzunk. (Csak egyetlen egy pont lesz a végtelen sok közül, ahol nem hibázunk.) Persze $f\left(X_1\right)$-et majd pont úgy lesz célszerű megválasztani, hogy oda rakjuk, ahol $Y$ gyakran előfordul, hogy a gyakran előforduló esetekben hibázzunk picit, és csak a ritkábbakban nagyobbat -- de erről majd kicsit később.
@@ -197,17 +201,17 @@ Elárulom, hogy ez az eloszlás többváltozós normális (később ennek majd j
 Sajnos ez az ábrázolás nehezen érzékelhető (pláne, ha nem interaktívan nézzük, és nincs módunk forgatni), jobban járunk, ha így rajzoljuk ki:
 
 ```{r,echo=FALSE}
-lattice::contourplot( f ~ tsratiogrid + scoregrid, data = JointDensity, xlab = "Tanár:diák arány",
-                      xlim = c( 0.04, 0.065 ), ylab = "Teszteredmény", zlab = "Sűrűség" )
+ggplot(JointDensity, aes(x = tsratiogrid, y = scoregrid, z = f)) + geom_contour() + metR::geom_text_contour() +
+  labs(x = "Tanár:diák arány", y = "Teszteredmény")
 ```
 
-Ez ugyanaz mint a fenti sűrűségfüggvény, de "szintvonalakkal" leírva (azaz különböző $z$ magasságokban elmetszettük a sűrűségfüggvényt és a kapott metszeteket ábrázoltuk). Belátható, hogy többváltozós normális esetén ezek mindig ellipszisek^[Úgy, hogy az ellipszis középpontját a várhatóérték-vektor adja meg, a tengelyek a kovariancia-mátrix sajátvektorainak irányába mutatnak, féltengelyeik hossza pedig a kovariancia-mátrix megfelelő sajátértékeivel arányos.]. Ezt az ábrázolást szokás 'contour plot'-nak nevezni, előnye, hogy -- a háromdimenziós érzékeltetéssel szemben -- nem érzékeny a nézőpont megválasztására, részek nem takarnak ki másokat stb. (Ám cserében nyilván információ-vesztéssel jár, ami azzal arányos, hogy milyen sűrűn képezzük a metszeteket.)
+Ez ugyanaz mint a fenti sűrűségfüggvény, de ,,szintvonalakkal'' leírva (azaz különböző $z$ magasságokban elmetszettük a sűrűségfüggvényt és a kapott metszeteket ábrázoltuk). Belátható, hogy többváltozós normális esetén ezek mindig ellipszisek^[Úgy, hogy az ellipszis középpontját a várhatóérték-vektor adja meg, a tengelyek a kovariancia-mátrix sajátvektorainak irányába mutatnak, féltengelyeik hossza pedig a kovariancia-mátrix megfelelő sajátértékeivel arányos.]. Ezt az ábrázolást szokás ,,contour plot''-nak nevezni, előnye, hogy -- a háromdimenziós érzékeltetéssel szemben -- nem érzékeny a nézőpont megválasztására, részek nem takarnak ki másokat stb. (Ám cserében nyilván információ-vesztéssel jár, ami azzal arányos, hogy milyen sűrűn képezzük a metszeteket.)
 
 Térjünk most vissza az alapkérdésünkre! Úgy vesszük, hogy ez az eloszlás adott, és le akarjuk írni mint $Y=f\left(\underline{X}\right)+\varepsilon$; de vajon mi $f$-re a legjobb választás? Persze egy ilyen kérdést hallva azonnal vissza kell kérdezni: mi a jóság mérőszáma? Hiszen csak ennek ismeretében mondható meg, hogy mi az optimális sokasági regressziófüggvény.
 
-Mivel az $\varepsilon$ hibát fejez ki, így azzal valószínűleg kevesen vitatkoznának, hogy az a legjobb $f$, amely mellett a hiba a legkisebb. Igen ám, de mi az, hogy a hiba a "legkisebb"? Ez nem olyan nyilvánvaló, ennek megértéséhez beszéljünk egy picit a hibáról. A helyzetet a fenti példán úgy kell elképzelnünk, hogy behúzzuk a $f\left(X_1\right)$ függvényt; ez olyan mintha rajzolnánk egy görbét az $X_1-Y$ síkra. Ez után végigmegyünk a sík minden pontján, és megnézzük ott mekkora a hiba: mennyire van távol $Y$ az $f\left(X_1\right)$-től; ez pedig akkora súllyal fog szerepet játszani a hiba eloszlásában, amilyen magasan fut az adott ponton a sűrűségfüggvény. Mindezek természetesen ugyanígy működnek az általános, $k+1$ dimenziós esetben is.
+Mivel az $\varepsilon$ hibát fejez ki, így azzal valószínűleg kevesen vitatkoznának, hogy az a legjobb $f$, amely mellett a hiba a legkisebb. Igen ám, de mi az, hogy a hiba a ,,legkisebb''? Ez nem olyan nyilvánvaló, ennek megértéséhez beszéljünk egy picit a hibáról. A helyzetet a fenti példán úgy kell elképzelnünk, hogy behúzzuk a $f\left(X_1\right)$ függvényt; ez olyan mintha rajzolnánk egy görbét az $X_1-Y$ síkra. Ez után végigmegyünk a sík minden pontján, és megnézzük ott mekkora a hiba: mennyire van távol $Y$ az $f\left(X_1\right)$-től; ez pedig akkora súllyal fog szerepet játszani a hiba eloszlásában, amilyen magasan fut az adott ponton a sűrűségfüggvény. Mindezek természetesen ugyanígy működnek az általános, $k+1$ dimenziós esetben is.
 
-A hibának tehát egy eloszlása van, így nem egyértelmű, hogy mikor a "legkisebb". Két dolgot kell tennünk, az egyik választás egyértelmű, de a másik már inkább döntés kérdése. Az első, hogy a hiba helyett annak $\mathbb{E}\varepsilon$ várható értékét tekintjük. Ez jó, mert így a valószínűségi változóból rögtön egy számot kapunk, amire pedig azonnal jobban értjük, hogy mit jelent az, hogy legyen a legkisebb. De igazán azért jó, mert ha összekombináljuk a várható érték fogalmát az előbbi bekezdés végén mondottakkal, akkor látjuk, hogy ez egy nagyon logikus dolgot mond: azt, hogy ott kevésbé számít a hibázás, ahová egyébként is ritkán esünk, és ott számít jobban a hibázás, ami gyakran előfordul!
+A hibának tehát egy eloszlása van, így nem egyértelmű, hogy mikor a ,,legkisebb''. Két dolgot kell tennünk, az egyik választás egyértelmű, de a másik már inkább döntés kérdése. Az első, hogy a hiba helyett annak $\mathbb{E}\varepsilon$ várható értékét tekintjük. Ez jó, mert így a valószínűségi változóból rögtön egy számot kapunk, amire pedig azonnal jobban értjük, hogy mit jelent az, hogy legyen a legkisebb. De igazán azért jó, mert ha összekombináljuk a várható érték fogalmát az előbbi bekezdés végén mondottakkal, akkor látjuk, hogy ez egy nagyon logikus dolgot mond: azt, hogy ott kevésbé számít a hibázás, ahová egyébként is ritkán esünk, és ott számít jobban a hibázás, ami gyakran előfordul!
 
 Azonban még nem végeztük. Ha meggondoljuk, akkor rögtön látjuk, hogy $\mathbb{E}\varepsilon$ még nem lesz jó: a hiba lehet negatív is és pozitív is, de mi^[A statisztikusokról szóló viccekkel szemben.] nem mondhatjuk azt, hogy ha egyszer 10-zel fölé lőttünk, egyszer meg 10-zel alá, akkor tökéletesek voltunk. Magyarán: meg kell szabadulni az előjeltől. Itt már van választási lehetőségünk, hogy mit teszünk, most döntsünk úgy (és jelen jegyzet túlnyomó többségében ezt adottságnak fogjuk venni), hogy négyzetre emeléssel szabadulunk meg az előjeltől, hiszen a négyzetre emelés függvény tulajdonságai nagyon kellemesek.
 
@@ -250,35 +254,31 @@ Talán nem felesleges feleleveníteni ezen a pontok a feltételes várható ért
 A kiindulópont a feltételes eloszlás, amit úgy kapunk, hogy fogjuk az együttes eloszlást, és egy adott ponton (ami a feltétel) átmetszük. Mondjuk legyen a feltétel az, hogy $X_1=0,\!055$:
 
 ```{r, echo=FALSE}
-lattice::contourplot( f ~ tsratiogrid + scoregrid, data = JointDensity, xlab = "Tanár:diák arány",
-                      xlim = c( 0.04, 0.065 ), ylab = "Teszteredmény", zlab = "Sűrűség", panel = function( ... ) {
-                        lattice::panel.contourplot( ... )
-                        lattice::panel.abline( v = 0.055, col = "red" )
-                      } )
+ggplot(JointDensity, aes(x = tsratiogrid, y = scoregrid, z = f)) + geom_contour() + metR::geom_text_contour() +
+  labs(x = "Tanár:diák arány", y = "Teszteredmény") + geom_vline(xintercept = 0.055, col = "red")
 ```
 
 Az együttes sűrűségfüggvény, ne feledjük, egy hegy (aminek a szintvonalait mutatja az ábra), tehát arról van szó, hogy fogunk egy nagy kést, és a piros vonal mentén végigvágjuk a hegyet. Így ezt kapjuk:
 
 ```{r, echo=FALSE}
-CondDensity <- JointDensity[ JointDensity$tsratiogrid==0.055, ]
-lattice::xyplot( f ~ scoregrid, data = CondDensity, type = "l", xlab = "Teszteredmény", ylab = "Sűrűség" )
+CondDensity <- JointDensity[JointDensity$tsratiogrid==0.055,]
+ggplot(CondDensity, aes(x = scoregrid, y = f)) + geom_line() +
+  labs(x = "Teszteredmény", y = "Sűrűség")
 ```
 
 Vigyázat, ez még nem sűrűségfüggvény, hiszen nem 1 a görbe alatti területe! De már majdnem megvagyunk, nincs más feladatunk, mint átnormálni (elosztani alkalmas konstanssal), hogy 1 legyen a görbe alatti terület, ez az alkalmas konstans persze a jelenlegi görbe alatti területe lesz, ami nem más, mint a vetületi eloszlás értéke a feltétel pontjában. Elvégezve ezt kapjuk a feltételes eloszlást:
 
 ```{r, echo=FALSE}
 CondDensity$f <- CondDensity$f/sum(CondDensity$f)
-lattice::xyplot( f ~ scoregrid, data = CondDensity, type = "l", xlab = "Teszteredmény", ylab = "Sűrűség" )
+ggplot(CondDensity, aes(x = scoregrid, y = f)) + geom_line() +
+  labs(x = "Teszteredmény", y = "Sűrűség")
 ```
 
 A feltételes várható érték nem más, mint a feltételes eloszlás várható érték -- tehát ennek a fenti függvénynek a várható érték. Bejelölve rajta:
 
 ```{r, echo=FALSE}
-lattice::xyplot( f ~ scoregrid, data = CondDensity, type = "l", xlab = "Teszteredmény", ylab = "Sűrűség",
-                 panel = function( ... ) {
-                   lattice::panel.xyplot( ... )
-                   lattice::panel.abline( v = sum(CondDensity$f*CondDensity$scoregrid), col = "orange" )
-                 })
+ggplot(CondDensity, aes(x = scoregrid, y = f)) + geom_line() +
+  labs(x = "Teszteredmény", y = "Sűrűség") + geom_vline(xintercept = sum(CondDensity$f*CondDensity$scoregrid), col = "orange")
 ```
 
 A feltételes várható érték tehát nagyjából 657, és ne feledjük, ez ahhoz a feltételhez tartozik, hogy a tanár:diák arány értéke 0,055. Ahogy az előbb megállapítottuk: ha valaki azt kérdezi, hogy ekkora tanár:diák arány mellett mi a legjobb tippünk a teszteredményre, akkor válaszoljunk 657-et! Ezzel is hibázhatunk persze, de így is ekkor járunk a legjobban (elfogadva persze, hogy négyzetes hibázást minimalizálunk).
@@ -286,11 +286,10 @@ A feltételes várható érték tehát nagyjából 657, és ne feledjük, ez ahh
 Jelöljük is be ezt az értéket az eredeti ábránkon:
 
 ```{r, echo=FALSE}
-lattice::contourplot( f ~ tsratiogrid + scoregrid, data = JointDensity, xlab = "Tanár:diák arány",
-                      xlim = c( 0.04, 0.065 ), ylab = "Teszteredmény", zlab = "Sűrűség", panel = function( ... ) {
-                        lattice::panel.contourplot( ... )
-                        lattice::panel.points( 0.055, sum(CondDensity$f*CondDensity$scoregrid), col = "orange", pch = 4 )
-                      } )
+ggplot(JointDensity, aes(x = tsratiogrid, y = scoregrid, z = f)) + geom_contour() + metR::geom_text_contour() +
+  labs(x = "Tanár:diák arány", y = "Teszteredmény") +
+  geom_point(data = data.frame(x = 0.055, y = sum(CondDensity$f*CondDensity$scoregrid)), aes(x = x, y = y),
+             inherit.aes = FALSE, col = "orange", pch = 4, stroke = 2)
 ```
 
 Így ni: ha 0,055-ben kérdeznek meg minket, akkor ez a legjobb tippünk.
@@ -298,19 +297,17 @@ lattice::contourplot( f ~ tsratiogrid + scoregrid, data = JointDensity, xlab = "
 De az ember itt már vérszemet kap: vajon mi történik, ha kiszámoljuk az összes többi pontban is, hogy mi a legjobb tippünk, tehát a feltételes várhatóértéket?! Íme:
 
 ```{r, echo=FALSE}
-lattice::contourplot( f ~ tsratiogrid + scoregrid, data = JointDensity, xlab = "Tanár:diák arány",
-                      xlim = c( 0.04, 0.065 ), ylab = "Teszteredmény", zlab = "Sűrűség", panel = function( ... ) {
-                        lattice::panel.contourplot( ... )
-                        lattice::panel.points( seq( 0.04, 0.07, 0.001 ), 
-                                               sapply( seq( 0.04, 0.07, 0.001 ), function( tsrat ) {
-                                                 CondDensity <- JointDensity[ JointDensity$tsratiogrid==tsrat, ]
+ggplot(JointDensity, aes(x = tsratiogrid, y = scoregrid, z = f)) + geom_contour() + metR::geom_text_contour() +
+  labs(x = "Tanár:diák arány", y = "Teszteredmény") +
+  geom_point(data = data.frame(x = seq(0.04, 0.065, 0.001), y = sapply(seq(0.04, 0.065, 0.001), function(tsrat) {
+                                                 CondDensity <- JointDensity[JointDensity$tsratiogrid==tsrat,]
                                                  CondDensity$f <- CondDensity$f/sum(CondDensity$f)
                                                  sum(CondDensity$f*CondDensity$scoregrid)
-                                               }), col = "orange", pch = 4 )
-                      } )
+                                               })), aes(x = x, y = y),
+             inherit.aes = FALSE, col = "orange", pch = 4, stroke = 2)
 ```
 
-Nem lehet nem észrevenni: ezek mind egy egyenesre^[Érdemes megfigyelni (ez kétváltozós esetben jó szemmértékkel még érzékelhető vizuálisan is), hogy a regressziófüggvény *nem* az ellipszisek nagytengelye -- tehát a korrelációs mátrix megfelelő sajátvektora -- irányába mutat! Hanem az ellipszis "vízszintesen szélső" pontjain megy át.)] illeszkednek! A dolog természetesen nem véletlen, és azért van így, mert az eloszlás többváltozós normális volt. Ez esetben az optimális sokasági regressziófüggvény csakugyan mindig lineáris, ez tételként kimondható^[A bizonyítást itt elhagyom, lásd például: Bolla-Krámli: Statisztikai következtetések elmélete. Typotex, 2005. 207-208.oldal.]: ha $Y$ és $\underline{X}$ együttes eloszlása normális^[Jelölje $\mathbf{C}_{\underline{X}\underline{X}}$ az $X$-ek szokásos kovarianciamátrixát, $\mathbf{C}_{Y\underline{X}}$ pedig azt az oszlopvektort, amely sorban az összes $X$ kovarianciáját tartalmazza $Y$-nal.], akkor
+Nem lehet nem észrevenni: ezek mind egy egyenesre^[Érdemes megfigyelni (ez kétváltozós esetben jó szemmértékkel még érzékelhető vizuálisan is), hogy a regressziófüggvény *nem* az ellipszisek nagytengelye -- tehát a korrelációs mátrix megfelelő sajátvektora -- irányába mutat! Hanem az ellipszis ,,vízszintesen szélső'' pontjain megy át.)] illeszkednek! A dolog természetesen nem véletlen, és azért van így, mert az eloszlás többváltozós normális volt. Ez esetben az optimális sokasági regressziófüggvény csakugyan mindig lineáris, ez tételként kimondható^[A bizonyítást itt elhagyom, lásd például: Bolla-Krámli: Statisztikai következtetések elmélete. Typotex, 2005. 207-208.oldal.]: ha $Y$ és $\underline{X}$ együttes eloszlása normális^[Jelölje $\mathbf{C}_{\underline{X}\underline{X}}$ az $X$-ek szokásos kovarianciamátrixát, $\mathbf{C}_{Y\underline{X}}$ pedig azt az oszlopvektort, amely sorban az összes $X$ kovarianciáját tartalmazza $Y$-nal.], akkor
 
 \[
 \mathbb{E}\left(Y \mid \underline{X}\right)=\mathbb{E}Y+\mathbf{C}_{Y\underline{X}}\mathbf{C}_{\underline{X}\underline{X}}^{-1}\left(\underline{X}-\mathbb{E}\underline{X}\right).
@@ -322,15 +319,15 @@ Egy tulajdonságát már ennyi alapján is rögtön láthatjuk a sokasági regre
 
 Visszatérve, ha bevezetjük a
 \[
-	\beta_0=\mathbb{E}Y-\mathbf{C}_{Y\underline{X}}\mathbf{C}_{\underline{X}\underline{X}}^{-1}\mathbb{E}\underline{X}
+\beta_0=\mathbb{E}Y-\mathbf{C}_{Y\underline{X}}\mathbf{C}_{\underline{X}\underline{X}}^{-1}\mathbb{E}\underline{X}
 \]
 és a
 \[
-	\begin{pmatrix}\beta_1&\beta_2& \cdots & \beta_k\end{pmatrix}^T=\mathbf{C}_{Y\underline{X}}\mathbf{C}_{\underline{X}\underline{X}}^{-1}\underline{X}
+\begin{pmatrix}\beta_1&\beta_2& \cdots & \beta_k\end{pmatrix}^T=\mathbf{C}_{Y\underline{X}}\mathbf{C}_{\underline{X}\underline{X}}^{-1}\underline{X}
 \]
 jelöléseket, akkor írhatjuk, hogy
 \[
-	\mathbb{E}\left(Y \mid \underline{X}\right)=\beta_0 + \beta_1 X_1 + \beta_2 X_2 + \ldots + \beta_k X_k.
+\mathbb{E}\left(Y \mid \underline{X}\right)=\beta_0 + \beta_1 X_1 + \beta_2 X_2 + \ldots + \beta_k X_k.
 \]
 
 Ebből talán még világosabban látszik a korábbi állítás: hogy többváltozós normális eloszlásnál speciálisan a regressziófüggvény lineáris lesz.
@@ -339,23 +336,23 @@ Ebből talán még világosabban látszik a korábbi állítás: hogy többvált
 
 - Korreláció megjelenése:
 \[
-  \mathbb{E}\left(Y \mid X\right)=\mathbb{E}Y+\frac{\mathrm{cov}\left(X,Y\right)}{\mathbb{D}^2 X}\left(X-\mathbb{E}X\right)=\mathbb{E}Y+\frac{\mathbb{D}Y}{\mathbb{D} X}\cdot\mathrm{corr}\left(X,Y\right)\cdot\left(X-\mathbb{E}X\right).
+\mathbb{E}\left(Y \mid X\right)=\mathbb{E}Y+\frac{\mathrm{cov}\left(X,Y\right)}{\mathbb{D}^2 X}\left(X-\mathbb{E}X\right)=\mathbb{E}Y+\frac{\mathbb{D}Y}{\mathbb{D} X}\cdot\mathrm{corr}\left(X,Y\right)\cdot\left(X-\mathbb{E}X\right).
 \]
 - A linearitás megjelenése itt:
 \[
-  \mathbb{E}\left(Y \mid X\right)=\mathbb{E}Y+\frac{\mathrm{cov}\left(X,Y\right)}{\mathbb{D}^2 X}\left(X-\mathbb{E}X\right)=\left(\mathbb{E}Y-\frac{\mathrm{cov}\left(X,Y\right)}{\mathbb{D}^2 X}\cdot \mathbb{E} X\right) + X\cdot \frac{\mathrm{cov}\left(X,Y\right)}{\mathbb{D}^2 X},
+\mathbb{E}\left(Y \mid X\right)=\mathbb{E}Y+\frac{\mathrm{cov}\left(X,Y\right)}{\mathbb{D}^2 X}\left(X-\mathbb{E}X\right)=\left(\mathbb{E}Y-\frac{\mathrm{cov}\left(X,Y\right)}{\mathbb{D}^2 X}\cdot \mathbb{E} X\right) + X\cdot \frac{\mathrm{cov}\left(X,Y\right)}{\mathbb{D}^2 X},
 \]
 azaz $\mathbb{E}\left(Y \mid X\right)=\beta_0 + \beta_1 X$, ha $\beta_0=\left(\mathbb{E}Y-\frac{\mathrm{cov}\left(X,Y\right)}{\mathbb{D}^2 X}\cdot \mathbb{E} X\right)$ és $\beta_1=\frac{\mathrm{cov}\left(X,Y\right)}{\mathbb{D}^2 X}$.
 
 És most egy borzasztó fontos dolog következik. Rakjuk össze a puzzle darabjait: egyfelől tudjuk, hogy $Y=f\left(X_1,X_2,\ldots,X_k\right)+\varepsilon$, másrészt most már azt is megállapítottuk, hogy az itt szereplő $f$ legjobb értéke $\mathbb{E}\left(Y \mid \underline{X}\right)$, és ez mindig^[Ha szigorúak akarunk lenni, akkor azért annyit hozzá kell tennünk, hogy *ha* létezik egyáltalán a feltételes várható érték. Vannak eloszlások, amiknek egyszerűen nem létezik várható értéke, úgyhogy ez elvileg nem mindegy, de mi most ilyen helyzetekkel nem fogunk foglalkozni.] igaz. Tehát azt kaptuk, hogy:
 \[
-  Y=\mathbb{E}\left(Y \mid \underline{X}\right)+\varepsilon
+Y=\mathbb{E}\left(Y \mid \underline{X}\right)+\varepsilon
 \]
-Ez a dekompozíciót szokás a regresszió "hibaalakjának" (error form) nevezni. Lényegében arról van szó, hogy szétbontjuk az eredményváltozó alakulását egy 'magyarázóváltozókkal elérhető legjobb becslés' (már láttuk: a feltételes várhatóérték) és egy 'maradék hiba' részre (ami marad). A regresszióanalízis a *feltételes* eloszlásra koncentrál! Ezért elvileg olyasmit kéne írnunk, hogy "$\left(Y \mid X\right) = \mathbb{E}\left(Y \mid \underline{X}\right)+\varepsilon$", de ezt nem tesszük (az $\left(Y \mid \underline{X}\right)$ objektumot nem szokás definiálni), ehelyett a bal oldalra simán $Y$-t írunk (de ne feledjük, hogy ez *feltételes*).
+Ez a dekompozíciót szokás a regresszió ,,hibaalakjának'' (error form) nevezni. Lényegében arról van szó, hogy szétbontjuk az eredményváltozó alakulását egy ,,magyarázóváltozókkal elérhető legjobb becslés'' (már láttuk: a feltételes várhatóérték) és egy ,,maradék hiba'' részre (ami marad). A regresszióanalízis a *feltételes* eloszlásra koncentrál! Ezért elvileg olyasmit kéne írnunk, hogy ,,$\left(Y \mid X\right) = \mathbb{E}\left(Y \mid \underline{X}\right)+\varepsilon$'', de ezt nem tesszük (az $\left(Y \mid \underline{X}\right)$ objektumot nem szokás definiálni), ehelyett a bal oldalra simán $Y$-t írunk (de ne feledjük, hogy ez *feltételes*).
 
 Nagyon fontos látni, hogy a regresszió *mindig* felírható így! És ráadásul ez *biztosan* optimális felírás. A mi választásunk az lesz, hogy majd $\mathbb{E}\left(Y \mid \underline{X}\right)$ helyébe mit írunk be, például *ha* tudjuk hogy minden változó együttes eloszlása többváltozós normális, akkor azt, hogy $\mathbb{E}\left(Y \mid \underline{X}\right)=\beta_0 + \beta_1 X_1 + \beta_2 X_2 + \ldots + \beta_k X_k$, és így azt kapjuk, hogy
 \[
-  Y=\beta_0 + \beta_1 X_1 + \beta_2 X_2 + \ldots + \beta_k X_k+\varepsilon,
+Y=\beta_0 + \beta_1 X_1 + \beta_2 X_2 + \ldots + \beta_k X_k+\varepsilon,
 \]
 de vigyázat, ez már -- szemben az előző formulával -- *nem* univerzális, csak normalitás esetén érvényes.
 
@@ -363,7 +360,7 @@ Lehetne $\mathbb{E}\left(Y \mid \underline{X}\right)$ helyébe más is beírni, 
 
 Tegyünk még egy megállapítást, ami most nem tűnik nagyon izgalmasnak, de a későbbiekben rettentő fontos lesz. Annyit kell tudnunk hozzá, hogy a feltételes várható érték is lineáris, valamint, hogyha valaminek kétszer vesszük a várható értékét, az ugyanaz mintha egyszer vennénk, és ez nem csak a szokásos várható értékre, hanem a feltételes várható értékre is igaz:
 \[
-  \mathbb{E}\left(\varepsilon \mid \underline{X}\right)=\mathbb{E}\left(Y-\mathbb{E}\left(Y \mid \underline{X}\right) \mid \underline{X}\right)=\mathbb{E}\left(Y\mid \underline{X}\right) - \mathbb{E}\left[\mathbb{E}\left(Y\mid \underline{X}\right)\mid \underline{X}\right]=\mathbb{E}\left(Y\mid \underline{X}\right) - \mathbb{E}\left(Y\mid \underline{X}\right)=0.
+\mathbb{E}\left(\varepsilon \mid \underline{X}\right)=\mathbb{E}\left(Y-\mathbb{E}\left(Y \mid \underline{X}\right) \mid \underline{X}\right)=\mathbb{E}\left(Y\mid \underline{X}\right) - \mathbb{E}\left[\mathbb{E}\left(Y\mid \underline{X}\right)\mid \underline{X}\right]=\mathbb{E}\left(Y\mid \underline{X}\right) - \mathbb{E}\left(Y\mid \underline{X}\right)=0.
 \]
 Azaz azt kapjuk, hogy $\mathbb{E}\left(\varepsilon \mid \underline{X}\right)=0$. Nagyon fontos, hogy értsük, hogy most mit mondunk: *ha* (!) tényleg -- valóságban helyes -- $\mathbb{E}\left(Y \mid \underline{X}\right)$-t használjuk, *akkor* $\mathbb{E}\left(\varepsilon \mid \underline{X}\right)=0$ *kell* legyen. Ez azért lesz izgalmas, mert $\mathbb{E}\left(Y \mid \underline{X}\right)$-t mi sem tudhatjuk biztosan, majd be kell valamit írnunk a helyébe (például azt, hogy $\beta_0 + \beta_1 X_1 + \beta_2 X_2 + \ldots + \beta_k X_k$). Ez a megállapítás tehát azt mondja, hogy *ha* beletrafálunk a dologba, *akkor* $\mathbb{E}\left(\varepsilon \mid \underline{X}\right)=0$ kell legyen. *De* ha nem (például ezt írjuk be, csak épp közben nem normális az eloszlás), akkor már ez egyáltalán nem biztos, hogy igaz lesz!
 
@@ -381,6 +378,6 @@ De újfent nagyon fontos hangsúlyozni, hogy a valós munka során, ahol nem tud
 
 Ezen a ponton összeérnek a szálak. Vegyük csak újra az előbbi alakot (és feltételezzük, hogy a szükséges feltevések teljesültek):
 \[
-  Y=\beta_0 + \beta_1 X_1 + \beta_2 X_2 + \ldots + \beta_k X_k+\varepsilon.
+Y=\beta_0 + \beta_1 X_1 + \beta_2 X_2 + \ldots + \beta_k X_k+\varepsilon.
 \]
 Mi itt 

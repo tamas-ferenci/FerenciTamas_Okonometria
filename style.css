@@ -45,3 +45,8 @@ li:not(.chapter) {
   -ms-hyphens: auto;
   hyphens: auto;
 }
+
+.book .book-body .page-wrapper .page-inner section.normal table
+{
+  width:auto;
+}

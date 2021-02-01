@@ -14,7 +14,7 @@ bookdown::gitbook:
     download: ["pdf", "epub"]
 bookdown::pdf_book:
   includes:
-    in_header: [ "preamble.tex", "preamble_pdf.tex" ]
+    in_header: ["preamble.tex", "preamble_pdf.tex"]
   latex_engine: lualatex
 bookdown::epub_book: default
 beamer_presentation:
