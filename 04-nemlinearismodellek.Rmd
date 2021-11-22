@@ -128,7 +128,7 @@ p2 + stat_function(fun = function(x) (1/0.6)*x+(log(0.6)-1), geom = "line", aes(
 - Az $\beta_1+\beta_2 X+\beta_3 X^2$ egy nemlineáris kifejezés (matematikailag)
 - De figyelem: ennek ellenére minden további nélkül, tökéletesen kezelhető pusztán az eddig látott (lineáris!) eszköztárral, hiszen az OLS-nek mindegy, hogy a második magyarázó változó értékei történetesen épp az első négyzetei
 - (Egészen addig nincs baj, amíg a kapcsolat nem lineáris)
-- Nem úgy mint az $\beta_1 X^{\beta_2}$ $\rightarrow$ ez nem becsülhető OLS-sel
+- Nem úgy mint a $\beta_1 X^{\beta_2}$ $\rightarrow$ ez nem becsülhető OLS-sel
 - A megkülönböztetés végett az első esetet változójában, a másodikat paraméterében nemlineáris modellnek nevezzük
 - Mi van ,,nemlinearitást okozó pozícióban''
 
