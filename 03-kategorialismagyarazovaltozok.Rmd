@@ -130,7 +130,7 @@ C|0    |    0
 		H_1&: \exists j: \beta_j^*\neq 0
 	\end{align*}
 - Több csoport átlaga eltér-e? De hát az az ANOVA!
-- Az egyezés nem pusztán formai, teljes tartalmazi egyezés van (ez nem csak hasonló, hanem ugyanaz: az ANOVA elmondása regressziós ,,keretben'')
+- Az egyezés nem pusztán formai, teljes tartalmi egyezés van (ez nem csak hasonló, hanem ugyanaz: az ANOVA elmondása regressziós ,,keretben'')
 
 ### Egynél több kategoriális magyarázó változó
 
@@ -143,10 +143,10 @@ C|0    |    0
 
 ## Regresszió minőségi és mennyiségi magyarázó változóval (ANCOVA)
 
-### Dummyzás folytonos magyarázó változó jelenléte mellett}
+### Dummyzás folytonos magyarázó változó jelenléte mellett
 
 - Amit eddig csináltunk az lényegében az volt, amit \emph{konstans dummyzásának} nevezhetünk: csoportonként eltérő (de konstans) értékkel becsültük az eredményváltozót
-- Mi van, ha bevonunk egy magyarázó változót?
+- Mi van, ha bevonunk egy folytonos magyarázó változót?
 - Azaz ekkor már nem egy konstanst becsülünk az egyes csoportokra, hanem egy egyenest (a folytonos magyarázó változó függvényében)
 - Dummyzással (tehát a csoporttagság szerint) eltéríthetjük az egyenesek tengelymetszetét és meredekségét is!
 - Lehet csoportonként különböző
@@ -197,7 +197,7 @@ Algebrailag:
 		Y=\alpha + \alpha_A D_A + \alpha_B D_B+ \gamma X + \gamma_A \left(D_A X\right) + \gamma_B \left(D_B X \right) + \varepsilon
 	\]
 - Logikus is: az egyik változó (folytonos) hatása eltér a szerint, hogy a másik változónak (kategoriális) mi a szintje: különböző meredekségek
-- Avagy fordítva elmondva (egyenértékűen, hiszen az interakció ugye szimmetrikus): az egyik változó (kategoriális) hatása eltér a szerint, hogy a másik változónak (folytonos) mi a szintje: az egyenesek közti különbség függ attól, hogy hol nézzük
+- Avagy fordítva elmondva (egyenértékűen, hiszen az interakció ugye szimmetrikus): az egyik változó (kategoriális) hatása eltér aszerint, hogy a másik változónak (folytonos) mi a szintje: az egyenesek közti különbség függ attól, hogy hol nézzük
 
 ### Eltérő tengelymetszet és meredekség
 
